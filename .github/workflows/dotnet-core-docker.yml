@@ -42,12 +42,14 @@ jobs:
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         repository: microting/eform-angular-frontend
         ref: master
         path: eform-angular-frontend
     - name: 'Preparing items planning checkout'
       uses: actions/checkout@v2
       with:
+        fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
         ref: master
         path: eform-angular-items-planning-plugin
