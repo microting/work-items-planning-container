@@ -53,6 +53,13 @@ jobs:
         repository: microting/eform-angular-items-planning-plugin
         ref: master
         path: eform-angular-items-planning-plugin
+    - name: 'Preparing work order checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-angular-work-orders-plugin
+        ref: master
+        path: eform-angular-work-orders-plugin
     - name: Install dependencies
       run: dotnet restore eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Build
@@ -61,6 +68,7 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
     - name: Copy dependencies
       run: |
+        cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
         cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
         cp -av eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
         cp -av eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
@@ -71,6 +79,7 @@ jobs:
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
+        cd eform-angular-frontend/eform-client && ../../eform-angular-work-orders-plugin/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: NPM install
@@ -90,6 +99,9 @@ jobs:
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Get the work order version
+      id: get_plugin_version
+      run: echo ::set-output name=PLUGIN2VERSION::$(cd eform-angular-work-orders-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the frontend version
       id: get_frontend_version
       run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -102,7 +114,7 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }}
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-container:latest registry.microting.com/microtingas/work-items-planning-container:latest
