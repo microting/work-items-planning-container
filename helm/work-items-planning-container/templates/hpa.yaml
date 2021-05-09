@@ -2,14 +2,14 @@
 apiVersion: autoscaling/v2beta1
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ include "work-items-planning.fullname" . }}
+  name: {{ include "work-items-planning-container.fullname" . }}
   labels:
-    {{- include "work-items-planning.labels" . | nindent 4 }}
+    {{- include "work-items-planning-container.labels" . | nindent 4 }}
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ include "work-items-planning.fullname" . }}
+    name: {{ include "work-items-planning-container.fullname" . }}
   minReplicas: {{ .Values.autoscaling.minReplicas }}
   maxReplicas: {{ .Values.autoscaling.maxReplicas }}
   metrics:

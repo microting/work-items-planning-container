@@ -1,16 +1,16 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "work-items-planning.fullname" . }}
+  name: {{ include "work-items-planning-container.fullname" . }}
   labels:
-    {{- include "work-items-planning.labels" . | nindent 4 }}
+    {{- include "work-items-planning-container.labels" . | nindent 4 }}
 spec:
   {{- if not .Values.autoscaling.enabled }}
   replicas: {{ .Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "work-items-planning.selectorLabels" . | nindent 6 }}
+      {{- include "work-items-planning-container.selectorLabels" . | nindent 6 }}
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -18,13 +18,13 @@ spec:
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "work-items-planning.selectorLabels" . | nindent 8 }}
+        {{- include "work-items-planning-container.selectorLabels" . | nindent 8 }}
     spec:
       {{- with .Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "work-items-planning.serviceAccountName" . }}
+      serviceAccountName: {{ include "work-items-planning-container.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:

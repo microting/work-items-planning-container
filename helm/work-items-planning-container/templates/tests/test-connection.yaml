@@ -1,9 +1,9 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: "{{ include "work-items-planning.fullname" . }}-test-connection"
+  name: "{{ include "work-items-planning-container.fullname" . }}-test-connection"
   labels:
-    {{- include "work-items-planning.labels" . | nindent 4 }}
+    {{- include "work-items-planning-container.labels" . | nindent 4 }}
   annotations:
     "helm.sh/hook": test
 spec:
@@ -11,5 +11,5 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "work-items-planning.fullname" . }}:{{ .Values.service.port }}']
+      args: ['{{ include "work-items-planning-container.fullname" . }}:{{ .Values.service.port }}']
   restartPolicy: Never
