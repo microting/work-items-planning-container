@@ -435,8 +435,8 @@ jobs:
       run: docker push registry.microting.com/microtingas/work-items-planning-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
-
   deploy-service:
+    needs: [frontend-build, items-planning-build, work-order-build, service-build, work-order-service-build, items-planning-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -484,7 +484,7 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
