@@ -479,13 +479,13 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
-        docker tag microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+        docker tag microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
     - name: Push the tagged Docker image
-      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }}
     - name: Push the latest Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-service-container:latest
     - name: Image digest
