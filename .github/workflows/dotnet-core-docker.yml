@@ -403,6 +403,9 @@ jobs:
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
         ../../eform-angular-work-orders-plugin/testinginstallpn.sh
+    - name: Get the version release
+      id: get_release_version
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -421,13 +424,13 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-container:latest registry.microting.com/microtingas/work-items-planning-container:latest
-        docker tag microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+        docker tag microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the tagged Docker image
-      run: docker push registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+      run: docker push registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the latest Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-container:latest
     - name: Image digest
@@ -460,6 +463,9 @@ jobs:
         repository: microting/eform-service-workorder-plugin
         ref: stable
         path: eform-service-workorder-plugin
+    - name: Get the version release
+      id: get_release_version
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -478,13 +484,13 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
-        docker tag microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+        docker tag microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the tagged Docker image
-      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_service_version.outputs.FRONTENDVERSION }}
+      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the latest Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-service-container:latest
     - name: Image digest
