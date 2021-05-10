@@ -128,7 +128,7 @@ jobs:
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
-        ref: master
+        ref: stable
         path: eform-angular-items-planning-plugin
     - name: Install dependencies
       run: dotnet restore eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
@@ -216,7 +216,7 @@ jobs:
       with:
         fetch-depth: 0
         repository: microting/eform-angular-work-orders-plugin
-        ref: master
+        ref: stable
         path: eform-angular-work-orders-plugin
     - name: Install dependencies
       run: dotnet restore eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
@@ -233,8 +233,8 @@ jobs:
       run: |
         mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-work-orders-plugin`'
         mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_SDK`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-work-orders-plugin < main/420_eform-angular-work-orders-plugin.sql
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_SDK < main/420_SDK.sql
+        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-work-orders-plugin < eform-angular-work-orders-plugin/420_eform-angular-work-orders-plugin.sql
+        mysql -u root -h 127.0.0.1 --password=secretpassword 420_SDK < eform-angular-work-orders-plugin/420_SDK.sql
     - name: Copy dependencies
       run: |
         cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
@@ -262,8 +262,108 @@ jobs:
       run: cd eform-angular-frontend/eform-client && npm run testheadless
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
+  service-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Preparing debian-service checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-debian-service
+        ref: stable
+        path: eform-debian-service
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore eform-debian-service
+    - name: Build
+      run: dotnet build --configuration Release --no-restore eform-debian-service
+    - name: Test
+      run: dotnet test --no-restore --verbosity normal eform-debian-service
+  work-order-service-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Preparing eform-service-workorder-plugin checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-workorder-plugin
+        ref: stable
+        path: eform-service-workorder-plugin
+    - uses: getong/mariadb-action@v1.1
+      with:
+        host port: 3306 # Optional, default value is 3306. The port of host
+        container port: 3306 # Optional, default value is 3306. The port of container
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
+        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
+    - name: Sleep 15 seconds
+      run: sleep 15
+    - uses: getong/rabbitmq-action@v1.2
+      with:
+        rabbitmq version: '3.8.9-management'
+        host port: 5672
+        rabbitmq user: 'admin'
+        rabbitmq password: 'password'
+        rabbitmq vhost: 'vhost_name'
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore eform-service-workorder-plugin
+    - name: Build
+      run: dotnet build --configuration Release --no-restore eform-service-workorder-plugin
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n eform-service-workorder-plugin/ServiceWorkOrdersPlugin.Integration.Test/ServiceWorkOrdersPlugin.Integration.Test.csproj
+  items-planning-service-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Preparing eform-service-items-planning-plugin checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-items-planning-plugin
+        ref: stable
+        path: eform-service-items-planning-plugin
+    - uses: getong/mariadb-action@v1.1
+      with:
+        host port: 3306 # Optional, default value is 3306. The port of host
+        container port: 3306 # Optional, default value is 3306. The port of container
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
+        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
+    - name: Sleep 15 seconds
+      run: sleep 15
+    - uses: getong/rabbitmq-action@v1.2
+      with:
+        rabbitmq version: '3.8.9-management'
+        host port: 5672
+        rabbitmq user: 'admin'
+        rabbitmq password: 'password'
+        rabbitmq vhost: 'vhost_name'
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore eform-service-items-planning-plugin
+    - name: Build
+      run: dotnet build --configuration Release --no-restore eform-service-items-planning-plugin
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n eform-service-items-planning-plugin/ServiceItemsPlanningPlugin.Integration.Test/ServiceItemsPlanningPlugin.Integration.Test.csproj
   deploy:
-    needs: [frontend-build, items-planning-build, work-order-build]
+    needs: [frontend-build, items-planning-build, work-order-build, service-build, work-order-service-build, items-planning-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -274,21 +374,21 @@ jobs:
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
-        ref: master
+        ref: stable
         path: eform-angular-frontend
     - name: 'Preparing items planning checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
-        ref: master
+        ref: stable
         path: eform-angular-items-planning-plugin
     - name: 'Preparing work order checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
         repository: microting/eform-angular-work-orders-plugin
-        ref: master
+        ref: stable
         path: eform-angular-work-orders-plugin
     - name: Copy dependencies
       run: |
