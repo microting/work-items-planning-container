@@ -6,31 +6,40 @@ on:
       - 'v*.*.*'
 
 jobs:
-  build:
+  frontend-build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [a,b,c,d,e,f,g]
     steps:
     - uses: actions/checkout@v2
-      with:
-        path: main
+    - name: Upgrade Chrome browser
+      run: |
+        sudo apt-get update
+        sudo apt-get --only-upgrade install google-chrome-stable
+
+        google-chrome --version
     - uses: getong/mariadb-action@v1.1
       with:
-        host port: 3306 # Optional, default value is 3306. The port of host
-        container port: 3306 # Optional, default value is 3306. The port of container
-        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
-        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
-        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
-        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
+        host port: 3306
+        container port: 3306
+        character set server: 'utf8'
+        collation server: 'utf8_general_ci'
+        mariadb version: '10.4.10'
+        mysql database: 'some_test'
+        mysql root password: 'secretpassword'
+        mysql user: 'developer'
+        mysql password: 'passwordtoo'
     - name: Sleep 15 seconds
       run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: '3.8.2-management-alpine'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
+        rabbitmq vhost: 'vhost_name'
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v1
       with:
@@ -39,6 +48,38 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.16.1'
+    - name: Install dependencies
+      run: dotnet restore eFormAPI/eFormAPI.sln
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Build
+      run: dotnet build eFormAPI/eFormAPI.sln
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n eFormAPI/eFormAPI.Web.Tests/eFormAPI.Web.Tests.csproj
+    - name: Integration Tests
+      run: dotnet test --no-restore -c Release -v n eFormAPI/eFormAPI.Web.Integration.Tests/eFormAPI.Web.Integration.Tests.csproj
+    - name: NPM Install
+      run: cd eform-client && npm install
+    - name: NPM start
+      run: cd eform-client && npm start &
+    - name: Sleep 75 seconds
+      run: sleep 75
+    - name: Dotnet run
+      run: dotnet run --project eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
+    - name: Sleep 75 seconds
+      run: sleep 75
+    - name: Configuration testing
+      run: cd eform-client && npm run testheadless
+    - name: testheadless2${{matrix.test}}
+      run: cd eform-client && npm run testheadless2${{matrix.test}}
+  deploy:
+    needs: frontend-build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: main
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -60,16 +101,6 @@ jobs:
         repository: microting/eform-angular-work-orders-plugin
         ref: master
         path: eform-angular-work-orders-plugin
-    - name: Install dependencies
-      run: dotnet restore eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
-    - name: Build
-      run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
-    - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
-    - name: Build
-      run: dotnet build eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
-    - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.Test/WorkOrders.Pn.Test.csproj
     - name: Copy dependencies
       run: |
         cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
@@ -84,22 +115,6 @@ jobs:
         cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
         ../../eform-angular-work-orders-plugin/testinginstallpn.sh
-    - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
-    - name: NPM install
-      run: cd eform-angular-frontend/eform-client && npm install
-    - name: NPM start
-      run: cd eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 7 #5
-    - name: Dotnet run
-      run: dotnet run --project eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 7 #5
-    - name: Configuration testing
-      run: cd eform-angular-items-planning-plugin && ls -lah #cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: Plugin testing
-      run: echo "hi" #cd eform-angular-frontend/eform-client && npm run testheadlessplugin
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
