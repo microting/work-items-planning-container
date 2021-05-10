@@ -150,7 +150,7 @@ jobs:
         cp -av eform-angular-items-planning-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
-        cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
+        cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: NPM install
@@ -245,7 +245,7 @@ jobs:
         cp -av eform-angular-work-orders-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cp -av eform-angular-work-orders-plugin/eFormAPI/eFormAPI.Web/Plugins/WorkOrders eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/WorkOrders
-        cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
+        cd eform-angular-frontend/eform-client && ../../eform-angular-work-orders-plugin/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: NPM install
