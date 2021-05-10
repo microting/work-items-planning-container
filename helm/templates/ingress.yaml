@@ -23,8 +23,8 @@ spec:
   tls:
     {{- range .Values.ingress.tls }}
     - hosts:
-        - "{{ regexReplaceAll "frontend-([1-9]+).*" $fullName "$1"}}.microting.com"
-      secretName: "{{ regexReplaceAll "frontend-([1-9]+).*" $fullName "$1"}}.microting.com"
+        - "{{ regexReplaceAll "frontend-([0-9]+).*" $fullName "$1"}}.microting.com"
+      secretName: "{{ regexReplaceAll "frontend-([0-9]+).*" $fullName "$1"}}.microting.com"
     {{- end }}
   {{- end }}
   defaultBackend:
@@ -34,7 +34,7 @@ spec:
         number: {{ $svcPort }}
   rules:
     {{- range .Values.ingress.hosts }}
-    - host: {{ regexReplaceAll "frontend-([1-9]+).*" $fullName "$1"}}.microting.com
+    - host: {{ regexReplaceAll "frontend-([0-9]+).*" $fullName "$1"}}.microting.com
       http:
         paths:
           {{- range .paths }}

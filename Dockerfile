@@ -17,7 +17,7 @@ COPY eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn ./Ite
 COPY eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn ./WorkOrders.Pn
 RUN dotnet publish eFormAPI.Web -o eFormAPI.Web/out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish ItemsPlanning.Pn -o ItemsPlanning.Pn/out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuration Release
-RUN dotnet publish WorkOrders.Pn -o WorkOrders.Pn/out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configuration Release
+RUN dotnet publish WorkOrders.Pn -o out/WorkOrders.Pn /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0

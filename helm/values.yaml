@@ -9,6 +9,8 @@ image:
   repository: registry.microting.com/microtingas/work-items-planning-container
   pullPolicy: Always
   # Overrides the image tag whose default is the chart appVersion.
+imagePullSecrets:
+  - name: regcred
 nameOverride: ""
 fullnameOverride: ""
 #arguments: [
@@ -28,6 +30,7 @@ serviceAccount:
 podAnnotations: {}
 
 podSecurityContext: {}
+
   # fsGroup: 2000
 
 securityContext: {}
