@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: "angular-backup-{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}"
+  name: "angular-work-order-backup-{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}"
   labels: {{- include "angularfrontend.labels" . | nindent 4 }}
 spec:
   schedule: "0 * * * *"
