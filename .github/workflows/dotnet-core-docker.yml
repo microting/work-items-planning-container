@@ -48,33 +48,38 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.16.1'
+    - name: 'Preparing Frontend checkout'
+      uses: actions/checkout@v2
+      with:
+        repository: microting/eform-angular-frontend
+        ref: stable
+        path: eform-angular-frontend
     - name: Install dependencies
-      run: dotnet restore eFormAPI/eFormAPI.sln
+      run: dotnet restore eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build eFormAPI/eFormAPI.sln
+      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eFormAPI/eFormAPI.Web.Tests/eFormAPI.Web.Tests.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-frontend/eFormAPI/eFormAPI.Web.Tests/eFormAPI.Web.Tests.csproj
     - name: Integration Tests
-      run: dotnet test --no-restore -c Release -v n eFormAPI/eFormAPI.Web.Integration.Tests/eFormAPI.Web.Integration.Tests.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-frontend/eFormAPI/eFormAPI.Web.Integration.Tests/eFormAPI.Web.Integration.Tests.csproj
     - name: NPM Install
-      run: cd eform-client && npm install
+      run: cd eform-angular-frontend/eform-client && npm install
     - name: NPM start
-      run: cd eform-client && npm start &
+      run: cd eform-angular-frontend/eform-client && npm start &
     - name: Sleep 75 seconds
       run: sleep 75
     - name: Dotnet run
-      run: dotnet run --project eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
+      run: dotnet run --project eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
     - name: Sleep 75 seconds
       run: sleep 75
     - name: Configuration testing
-      run: cd eform-client && npm run testheadless
+      run: cd eform-angular-frontend/eform-client && npm run testheadless
     - name: testheadless2${{matrix.test}}
-      run: cd eform-client && npm run testheadless2${{matrix.test}}
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2${{matrix.test}}
   items-planning-build:
-    needs: frontend-build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -112,14 +117,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.16.1'
-    - name: Extract branch name
-      id: extract_branch
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
         repository: microting/eform-angular-frontend
-        ref: ${{ steps.extract_branch.outputs.branch }}
+        ref: stable
         path: eform-angular-frontend
     - name: Install dependencies
       run: dotnet restore main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
@@ -159,7 +161,6 @@ jobs:
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
   work-order-build:
-    needs: items-planning-build
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -197,14 +198,11 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: '14.16.1'
-    - name: Extract branch name
-      id: extract_branch
-      run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
         repository: microting/eform-angular-frontend
-        ref: ${{ steps.extract_branch.outputs.branch }}
+        ref: stable
         path: eform-angular-frontend
     - name: Install dependencies
       run: dotnet restore main/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
@@ -251,7 +249,7 @@ jobs:
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
   deploy:
-    needs: work-order-build
+    needs: [frontend-build, items-planning-build, work-order-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
