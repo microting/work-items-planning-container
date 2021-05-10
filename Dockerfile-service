@@ -10,8 +10,8 @@ COPY eform-debian-service ./eform-debian-service
 COPY eform-service-items-planning-plugin ./eform-service-items-planning-plugin
 COPY eform-service-workorder-plugin ./eform-service-workorder-plugin
 RUN dotnet publish -o out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release eform-debian-service
-RUN dotnet publish -o out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuraiton Release eform-service-items-planning-plugin
-RUN dotnet publish -o out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configutation Release eform-service-workorder-plugin
+RUN dotnet publish -o out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuration Release eform-service-items-planning-plugin
+RUN dotnet publish -o out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configuration Release eform-service-workorder-plugin
 RUN pwd
 
 # Build runtime image
