@@ -123,26 +123,33 @@ jobs:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
+    - name: 'Preparing items planning checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-angular-items-planning-plugin
+        ref: master
+        path: eform-angular-items-planning-plugin
     - name: Install dependencies
-      run: dotnet restore main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+      run: dotnet restore eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+      run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n main/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
     - name: Copy dependencies
       run: |
-        cp -av main/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
-        cp -av main/eform-client/e2e/Tests/items-planning-settings eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
-        cp -av main/eform-client/e2e/Tests/items-planning-general eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
-        cp -av main/eform-client/e2e/Page\ objects/ItemsPlanning eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
-        cp -av main/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/Assets
-        cp -av main/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-        cp -av main/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
+        cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-settings eform-angular-frontend/eform-client/e2e/Tests/items-planning-settings
+        cp -av eform-angular-items-planning-plugin/eform-client/e2e/Tests/items-planning-general eform-angular-frontend/eform-client/e2e/Tests/items-planning-general
+        cp -av eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
+        cp -av eform-angular-items-planning-plugin/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/Assets
+        cp -av eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
+        cp -av eform-angular-items-planning-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av main/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
+        cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
         cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
@@ -204,15 +211,22 @@ jobs:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
+    - name: 'Preparing work order checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-angular-work-orders-plugin
+        ref: master
+        path: eform-angular-work-orders-plugin
     - name: Install dependencies
-      run: dotnet restore main/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
+      run: dotnet restore eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build main/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
+      run: dotnet build eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n main/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.Test/WorkOrders.Pn.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.Test/WorkOrders.Pn.Test.csproj
     - name: Sleep 15
       run: sleep 15
     - name: Load DB dump
@@ -223,14 +237,14 @@ jobs:
         mysql -u root -h 127.0.0.1 --password=secretpassword 420_SDK < main/420_SDK.sql
     - name: Copy dependencies
       run: |
-        cp -av main/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
-        cp -av main/eform-client/e2e/Tests/workorders-settings eform-angular-frontend/eform-client/e2e/Tests/workorders-settings
-        cp -av main/eform-client/e2e/Tests/workorders-general eform-angular-frontend/eform-client/e2e/Tests/workorders-general
-        cp -av main/eform-client/e2e/Page\ objects/WorkOrders eform-angular-frontend/eform-client/e2e/Page\ objects/WorkOrders
-        cp -av main/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-        cp -av main/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
+        cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
+        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Tests/workorders-settings eform-angular-frontend/eform-client/e2e/Tests/workorders-settings
+        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Tests/workorders-general eform-angular-frontend/eform-client/e2e/Tests/workorders-general
+        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Page\ objects/WorkOrders eform-angular-frontend/eform-client/e2e/Page\ objects/WorkOrders
+        cp -av eform-angular-work-orders-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
+        cp -av eform-angular-work-orders-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av main/eFormAPI/eFormAPI.Web/Plugins/WorkOrders eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/WorkOrders
+        cp -av eform-angular-work-orders-plugin/eFormAPI/eFormAPI.Web/Plugins/WorkOrders eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/WorkOrders
         cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
