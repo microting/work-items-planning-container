@@ -401,7 +401,6 @@ jobs:
         cp -av eform-angular-items-planning-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
         cp -av eform-angular-items-planning-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
         ../../eform-angular-work-orders-plugin/testinginstallpn.sh
     - name: Get the version
@@ -431,5 +430,63 @@ jobs:
       run: docker push registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
     - name: Push the latest Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-container:latest
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+
+  deploy-service:
+    needs: [frontend-build, items-planning-build, work-order-build, service-build, work-order-service-build, items-planning-service-build]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        path: main
+    - name: 'Preparing Frontend checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-debian-service
+        ref: stable
+        path: eform-debian-service
+    - name: 'Preparing items planning checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-items-planning-plugin
+        ref: stable
+        path: eform-service-items-planning-plugin
+    - name: 'Preparing work order checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-workorder-plugin
+        ref: stable
+        path: eform-service-workorder-plugin
+    - name: Get the version
+      id: get_version
+      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Get the work order version
+      id: get_plugin_version
+      run: echo ::set-output name=PLUGIN2VERSION::$(cd eform-service-workorder-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Get the service version
+      id: get_service_version
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Copy Docker file
+      run: cp main/Dockerfile-service Dockerfile
+    - name: Login to DockerHub
+      uses: docker/login-action@v1
+      with:
+        registry: registry.microting.com
+        username: renemadsen
+        password: zd8237EA
+    - name: Build the tagged Docker image
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
+    - name: Tag builds
+      run: |-
+        docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
+        docker tag microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+    - name: Push the tagged Docker image
+      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
+    - name: Push the latest Docker image
+      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}

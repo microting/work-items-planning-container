@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+ARG GITVERSION
+WORKDIR /app
+ARG GITVERSION
+ARG PLUGINVERSION
+ARG PLUGIN2VERSION
+
+# Copy csproj and restore as distinct layers
+COPY eform-debian-service ./eform-debian-service
+COPY eform-service-items-planning-plugin ./eform-service-items-planning-plugin
+COPY eform-service-workorder-plugin ./eform-service-workorder-plugin
+RUN dotnet publish -o out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release eform-debian-service
+RUN dotnet publish -o out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuraiton Release eform-service-items-planning-plugin
+RUN dotnet publish -o out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configutation Release eform-service-workorder-plugin
+RUN pwd
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+COPY --from=build-env /app/out .
+RUN rm connection.json; exit 0
+
+ENTRYPOINT ["dotnet", "MicrotingService.dll"]
