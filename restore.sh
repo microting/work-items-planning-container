@@ -56,8 +56,8 @@ gunzip $LAST_BACKUP
 
 echo "Resotoring to host : $HOST"
 
-#kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e "drop database `$1_eform-angular-items-planning-plugin`"
-#kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e "create database `$1_eform-angular-items-planning-plugin`"
+kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'drop database `'$DATABASE_NAME'`'
+kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'create database `'$DATABASE_NAME'`'
 
 kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword $DATABASE_NAME < backup*.sql
 rm backup-*.sql
@@ -73,8 +73,8 @@ gunzip $LAST_BACKUP
 
 echo "Resotoring to host : $HOST"
 
-#kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e "drop database `$1_eform-angular-work-orders-plugin`"
-#kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e "create database `$1_eform-angular-work-orders-plugin`"
+kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'drop database `'$DATABASE_NAME'`'
+kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'create database `'$DATABASE_NAME'`'
 
 kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword $DATABASE_NAME < backup*.sql
 rm backup-*.sql
