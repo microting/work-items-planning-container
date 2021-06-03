@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   registry: registry.microting.com
   repository: registry.microting.com/microtingas/work-items-planning-container
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
 imagePullSecrets:
   - name: regcred
