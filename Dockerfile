@@ -10,14 +10,17 @@ WORKDIR /app
 ARG GITVERSION
 ARG PLUGINVERSION
 ARG PLUGIN2VERSION
+ARG PLUGIN3VERSION
 
 # Copy csproj and restore as distinct layers
 COPY eform-angular-frontend/eFormAPI/eFormAPI.Web ./eFormAPI.Web
 COPY eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn ./ItemsPlanning.Pn
 COPY eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn ./WorkOrders.Pn
+COPY eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn ./Workflow.Pn
 RUN dotnet publish eFormAPI.Web -o eFormAPI.Web/out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish ItemsPlanning.Pn -o ItemsPlanning.Pn/out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish WorkOrders.Pn -o WorkOrders.Pn/out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configuration Release
+RUN dotnet publish Workflow.Pn -o Workflow.Pn/out /p:Version=$PLUGIN3VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:5.0
@@ -25,8 +28,10 @@ WORKDIR /app
 COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
 RUN mkdir -p ./Plugins/WorkOrders.Pn
+RUN mkdir -p ./Plugins/Workflow.Pn
 COPY --from=build-env /app/ItemsPlanning.Pn/out ./Plugins/ItemsPlanning.Pn
 COPY --from=build-env /app/WorkOrders.Pn/out ./Plugins/WorkOrders.Pn
+COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
 COPY --from=node-env /app/dist wwwroot
 RUN rm connection.json; exit 0
 
@@ -35,6 +40,9 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1
 RUN apt-get update && \
 	apt-get -y -q install \
+		libxml2 \
+		libgdiplus \
+		libc6-dev \
 		libreoffice \
 		libreoffice-writer \
 		ure \
