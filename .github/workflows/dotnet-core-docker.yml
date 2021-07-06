@@ -224,9 +224,9 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build main/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
+      run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n main/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
     - name: Sleep 15 seconds
       run: sleep 15
     - name: Load DB dump
@@ -496,7 +496,7 @@ jobs:
       with:
         dotnet-version: 5.0.100
     - name: Install dependencies
-      run: dotnet restore
+      run: dotnet restore eform-service-workflow-plugin
     - name: Build
       run: dotnet build --configuration Release --no-restore eform-service-workflow-plugin
     - name: Unit Tests
