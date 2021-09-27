@@ -418,9 +418,9 @@ jobs:
       id: get_version
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
-      run: dotnet build eform-angular-work-orders-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
+      run: dotnet build eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-angular-work-orders-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.Test/BackendConfiguration.Pn.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.Test/BackendConfiguration.Pn.Test.csproj
     - name: Sleep 15
       run: sleep 15
     - name: Copy dependencies
