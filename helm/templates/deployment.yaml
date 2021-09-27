@@ -50,7 +50,9 @@ spec:
               path: /auth
               port: 5000
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
           args:
             [
             "/ConnectionString=Persist Security Info=True;host={{ include "angularfrontend.databaseHost" . }};Database={{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_Angular;user = root; password = secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;",
