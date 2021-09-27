@@ -1,4 +1,4 @@
-FROM node:14.16.1 as node-env
+FROM node:14.17.6 as node-env
 WORKDIR /app
 ENV PATH /app/node_modules/.bin:$PATH
 COPY eform-angular-frontend/eform-client ./
@@ -32,6 +32,7 @@ COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
 RUN mkdir -p ./Plugins/WorkOrders.Pn
 RUN mkdir -p ./Plugins/Workflow.Pn
+RUN mkdir -p ./Plugins/BackendConfiguration.Pn
 COPY --from=build-env /app/ItemsPlanning.Pn/out ./Plugins/ItemsPlanning.Pn
 COPY --from=build-env /app/WorkOrders.Pn/out ./Plugins/WorkOrders.Pn
 COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
