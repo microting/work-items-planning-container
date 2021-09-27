@@ -35,6 +35,7 @@ RUN mkdir -p ./Plugins/Workflow.Pn
 COPY --from=build-env /app/ItemsPlanning.Pn/out ./Plugins/ItemsPlanning.Pn
 COPY --from=build-env /app/WorkOrders.Pn/out ./Plugins/WorkOrders.Pn
 COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
+COPY --from=build-env /app/BackendConfiguration.Pn/out ./Plugins/BackendConfiguration.Pn
 COPY --from=node-env /app/dist wwwroot
 RUN rm connection.json; exit 0
 
