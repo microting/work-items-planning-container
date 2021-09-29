@@ -54,3 +54,9 @@ spec:
 
             command: ['sh', '/perform-backup.sh']
             imagePullPolicy: IfNotPresent
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "250m"
+          nodeSelector:
+            node.kubernetes.io/instance-type: s-1vcpu-2gb
