@@ -36,7 +36,7 @@ spec:
           resources:
             requests:
               memory: "256Mi"
-              cpu: "250m"
+              cpu: "100m"
           args:
             [
             "/ConnectionString=host={{ .Release.Name }}-mariadb;Database={{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_SDK;user = root; password = secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;",
