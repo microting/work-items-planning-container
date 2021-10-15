@@ -453,7 +453,10 @@ resources:
   limits: {}
   #   cpu: 1000m
   #   memory: 2Gi
-  requests: {}
+  # requests: {}
+  requests:
+    memory: "256Mi"
+    cpu: "100m"
   #   cpu: 1000m
   #   memory: 2Gi
 
