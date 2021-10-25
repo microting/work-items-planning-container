@@ -694,7 +694,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    needs: [frontend-build, items-planning-build, work-order-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build]
+    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
