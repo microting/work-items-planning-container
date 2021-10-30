@@ -32,7 +32,7 @@ spec:
                 valueFrom:
                   secretKeyRef:
                     name: aws-secrets
-                    key: angularBackupPath
+                    key: angularPluginBackups
               - name: NO_DB_NAME
                 value: "true"
               - name: DB_CLEANUP

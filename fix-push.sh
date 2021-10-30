@@ -7,7 +7,7 @@ for CUSTOMER in ${CUSTOMERS[@]}; do
   HOST="frontend-$CUSTOMER-mariadb-0"
   DATABASE_NAME="$CUSTOMER""_eform-angular-items-planning-plugin"
 
-  kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'use `'$DATABASE_NAME'`; update Plannings set PushMessageOnDeployment = 1, DaysBeforeRedeploymentPushMessageRepeat = 1'
+  kubectl -n customers exec -it $HOST -- mysql -u root -psecretpassword -e 'use `'$DATABASE_NAME'`; update Plannings set PushMessageOnDeployment = 0, DaysBeforeRedeploymentPushMessageRepeat = 0'
 
   echo "Done updating customer with no $CUSTOMER"
 done
