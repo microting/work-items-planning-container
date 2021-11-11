@@ -462,12 +462,12 @@ jobs:
       run: cd eform-angular-frontend/eform-client && npm run testheadless
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
-  timeplannng-pn-build:
+  timeplanning-pn-build:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
-        path: main
+        path: eform-angular-timeplanning-plugin
     - name: Upgrade Chrome browser
       run: |
         sudo apt-get update
@@ -506,19 +506,13 @@ jobs:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
-    - name: 'Preparing work order checkout'
+    - name: 'Preparing Time Planning checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: microting/eform-backendconfiguration-plugin
+        repository: microting/eform-angular-timeplanning-plugin
         ref: stable
-        path: eform-backendconfiguration-plugin
-    - name: 'Preparing ItemsPlanning checkout'
-      uses: actions/checkout@v2
-      with:
-        repository: microting/eform-angular-items-planning-plugin
-        ref: ${{ steps.extract_branch.outputs.branch }}
-        path: eform-angular-items-planning-plugin
+        path: eform-angular-timeplanning-plugin
     - name: Install dependencies
       run: dotnet restore eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
     - name: Get the version
@@ -526,10 +520,8 @@ jobs:
       run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
     - name: Build
       run: dotnet build eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
-    - name: Build ItemsPlanning
-      run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-backendconfiguration-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.Test/BackendConfiguration.Pn.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.Test/TimePlanning.Pn.Test.csproj
     - name: Sleep 15
       run: sleep 15
     - name: Copy dependencies
@@ -579,6 +571,46 @@ jobs:
       run: dotnet build --configuration Release --no-restore eform-debian-service
     - name: Test
       run: dotnet test --no-restore --verbosity normal eform-debian-service
+  timeplanning-service-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Preparing eform-service-timeplanning-plugin checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-timeplanning-plugin
+        ref: stable
+        path: eform-service-timeplanning-plugin
+    - uses: getong/mariadb-action@v1.1
+      with:
+        host port: 3306 # Optional, default value is 3306. The port of host
+        container port: 3306 # Optional, default value is 3306. The port of container
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
+        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
+    - name: Sleep 15 seconds
+      run: sleep 15
+    - uses: getong/rabbitmq-action@v1.2
+      with:
+        rabbitmq version: '3.8.9-management'
+        host port: 5672
+        rabbitmq user: 'admin'
+        rabbitmq password: 'password'
+        rabbitmq vhost: 'vhost_name'
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.100
+    - name: Install dependencies
+      run: dotnet restore eform-service-timeplanning-plugin
+    - name: Build
+      run: dotnet build --configuration Release --no-restore eform-service-timeplanning-plugin
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n eform-service-timeplanning-plugin/ServiceTimePlanningPlugin.Integration.Test/ServiceTimePlanningPlugin.Integration.Test.csproj
   work-order-service-build:
     runs-on: ubuntu-latest
     steps:
@@ -700,7 +732,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-workflow-plugin/ServiceWorkflowPlugin.Integration.Test/ServiceWorkflowPlugin.Integration.Test.csproj
   deploy:
-    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplannng-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build]
+    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -741,16 +773,25 @@ jobs:
         repository: microting/eform-backendconfiguration-plugin
         ref: stable
         path: eform-backendconfiguration-plugin
+    - name: 'Preparing time planning checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-angular-timeplanning-plugin
+        ref: stable
+        path: eform-angular-timeplanning-plugin
     - name: Copy dependencies
       run: |
         cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
         cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
         cp -av eform-backendconfiguration-plugin/eform-client/src/app/plugins/modules/backend-configuration-pn eform-angular-frontend/eform-client/src/app/plugins/modules/backend-configuration-pn
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
         ../../eform-angular-work-orders-plugin/testinginstallpn.sh
         ../../eform-angular-workflow-plugin/testinginstallpn.sh
+        ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
         ../../eform-backendconfiguration-plugin/testinginstallpn.sh
     - name: Get the version release
       id: get_release_version
@@ -767,6 +808,9 @@ jobs:
     - name: Get the work order version
       id: get_plugin4_version
       run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Get the time planning version
+      id: get_plugin5_version
+      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-angular-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the frontend version
       id: get_frontend_version
       run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -779,7 +823,7 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }}
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-container:latest registry.microting.com/microtingas/work-items-planning-container:latest
@@ -791,7 +835,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build]
+    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
