@@ -1,7 +1,7 @@
 apiVersion: batch/v1beta1
 kind: CronJob
 metadata:
-  name: "angular-work-order-backup-{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}"
+  name: "angular-timeplanning-plugin-{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}"
   labels: {{- include "angularfrontend.labels" . | nindent 4 }}
 spec:
   schedule: "10 * * * *"
@@ -28,7 +28,7 @@ spec:
                     name: aws-secrets
                     key: awsSecretKey
               - name: AWS_BUCKET_BACKUP_PATH
-                value: "{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}/eform-angular-work-orders-plugin"
+                value: "{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}/eform-angular-timeplanning-plugin"
               - name: AWS_BUCKET_NAME
                 valueFrom:
                   secretKeyRef:
@@ -51,7 +51,7 @@ spec:
               - name: TARGET_DATABASE_PASSWORD
                 value: "secretpassword"
               - name: TARGET_DATABASE_NAMES
-                value: "{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_eform-angular-work-orders-plugin"
+                value: "{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_eform-angular-timeplanning-plugin"
 
             command: ['sh', '/perform-backup.sh']
             imagePullPolicy: IfNotPresent
