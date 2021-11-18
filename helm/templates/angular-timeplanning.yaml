@@ -52,6 +52,8 @@ spec:
                 value: "secretpassword"
               - name: TARGET_DATABASE_NAMES
                 value: "{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_eform-angular-timeplanning-plugin"
+              - name: IGNORE_ERRORS
+                value: "true"
 
             command: ['sh', '/perform-backup.sh']
             imagePullPolicy: IfNotPresent
