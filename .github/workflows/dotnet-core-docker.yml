@@ -830,8 +830,6 @@ jobs:
         docker tag microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the tagged Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
-    - name: Push the latest Docker image
-      run: docker push registry.microting.com/microtingas/work-items-planning-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
@@ -900,7 +898,5 @@ jobs:
         docker tag microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the tagged Docker image
       run: docker push registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
-    - name: Push the latest Docker image
-      run: docker push registry.microting.com/microtingas/work-items-planning-service-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
