@@ -77,8 +77,16 @@ autoscaling:
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
-nodeSelector:
-  node.kubernetes.io/instance-type: s-2vcpu-4gb-amd
+affinity:
+  nodeAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values:
+          - s-2vcpu-4gb-amd
+          - s-2vcpu-4gb
 
 tolerations: []
 
