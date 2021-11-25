@@ -4,7 +4,7 @@ metadata:
   name: "angular-timeplanning-plugin-{{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}"
   labels: {{- include "angularfrontend.labels" . | nindent 4 }}
 spec:
-  schedule: "10 * * * *"
+  schedule: "30 * * * *"
   concurrencyPolicy: Forbid
   successfulJobsHistoryLimit: 0
   failedJobsHistoryLimit: 0
