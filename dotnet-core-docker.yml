@@ -73,8 +73,22 @@ jobs:
       run: sleep 75
     - name: Configuration testing
       run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: testheadless2${{matrix.test}}
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2${{matrix.test}}
+    - name: testheadless2a
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2a
+    - name: testheadless2b
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2b
+    - name: testheadless2d
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2c
+    - name: testheadless2c
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2d
+    - name: testheadless2e
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2e
+    - name: testheadless2f
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2f
+    - name: testheadless2g
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2g
+    - name: testheadless2h
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2h
   items-planning-build:
     runs-on: ubuntu-latest
     steps:
@@ -813,7 +827,8 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-workflow-plugin/ServiceWorkflowPlugin.Integration.Test/ServiceWorkflowPlugin.Integration.Test.csproj
   deploy:
-    runs-on: ubuntu-latest
+    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
+    runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
       with:
@@ -925,7 +940,8 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    runs-on: ubuntu-latest
+    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
+    runs-on: self-hosted
     steps:
     - uses: actions/checkout@v2
       with:
