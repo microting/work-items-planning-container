@@ -27,7 +27,7 @@ type: application
 version: 0.3.13
 
 # This is the v
-ersion number of the application being deployed. This version number should be
+# ersion number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
