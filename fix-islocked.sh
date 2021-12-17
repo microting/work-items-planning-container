@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-CUSTOMERS=('888' '889')
+CUSTOMERS=('891' '890')
 
 for CUSTOMER in ${CUSTOMERS[@]}; do
   echo "Updating customer with no $CUSTOMER"
