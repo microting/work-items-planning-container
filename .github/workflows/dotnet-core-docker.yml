@@ -816,16 +816,16 @@ jobs:
       run: dotnet build --configuration Release --no-restore eform-service-workflow-plugin
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-workflow-plugin/ServiceWorkflowPlugin.Integration.Test/ServiceWorkflowPlugin.Integration.Test.csproj
-    backend-configuration-service-build:
+  backend-configuration-service-build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Preparing eform-service-backend-configuration-plugin checkout'
+    - name: 'Preparing eform-service-backendconfiguration-plugin checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: microting/eform-service-backend-configuration-plugin
+        repository: microting/eform-service-backendconfiguration-plugin
         ref: stable
-        path: eform-service-backend-configuration-plugin
+        path: eform-service-backendconfiguration-plugin
     - uses: getong/mariadb-action@v1.1
       with:
         host port: 3306 # Optional, default value is 3306. The port of host
@@ -851,11 +851,11 @@ jobs:
       with:
         dotnet-version: 6.0.x
     - name: Install dependencies
-      run: dotnet restore eform-service-backend-configuration-plugin
+      run: dotnet restore eform-service-backendconfiguration-plugin
     - name: Build
-      run: dotnet build --configuration Release --no-restore eform-service-backend-configuration-plugin
+      run: dotnet build --configuration Release --no-restore eform-service-backendconfiguration-plugin
     - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-service-backend-configuration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
+      run: dotnet test --no-restore -c Release -v n eform-service-backendconfiguration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -1013,9 +1013,9 @@ jobs:
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
-        repository: microting/eform-service-backend-configuration-plugin
+        repository: microting/eform-service-backendconfiguration-plugin
         ref: stable
-        path: eform-service-timeplanning-plugin
+        path: eform-service-backendconfiguration-plugin
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -1033,7 +1033,7 @@ jobs:
       run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the Backend Configuration version
       id: get_plugin5_version
-      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backend-configuration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the service version
       id: get_service_version
       run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
