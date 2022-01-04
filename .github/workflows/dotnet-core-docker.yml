@@ -1015,7 +1015,7 @@ jobs:
         fetch-depth: 0
         repository: microting/eform-service-backendconfiguration-plugin
         ref: stable
-        path: eform-service-timeplanning-plugin
+        path: eform-service-backendconfiguration-plugin
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
