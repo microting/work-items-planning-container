@@ -93,7 +93,6 @@ affinity:
         - key: node.kubernetes.io/instance-type
           operator: In
           values:
-          - s-2vcpu-4gb-amd
           - s-2vcpu-4gb
 
 tolerations: []
@@ -145,7 +144,6 @@ mariadb:
             - key: node.kubernetes.io/instance-type
               operator: In
               values:
-              - s-2vcpu-4gb-amd
               - s-2vcpu-4gb
 rabbitmq:
   ## Whether to deploy a rabbitmq server to satisfy the applications database requirements.
@@ -236,7 +234,6 @@ rabbitmq:
           - key: node.kubernetes.io/instance-type
             operator: In
             values:
-            - s-2vcpu-4gb-amd
             - s-2vcpu-4gb
 
 cronjob:
