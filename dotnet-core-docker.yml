@@ -8,6 +8,10 @@ on:
 jobs:
   frontend-build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [a,b,c,d,e,f,g]
     steps:
     - uses: actions/checkout@v2
     - name: Upgrade Chrome browser
@@ -73,22 +77,8 @@ jobs:
       run: sleep 75
     - name: Configuration testing
       run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: testheadless2a
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2a
-    - name: testheadless2b
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2b
-    - name: testheadless2d
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2c
-    - name: testheadless2c
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2d
-    - name: testheadless2e
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2e
-    - name: testheadless2f
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2f
-    - name: testheadless2g
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2g
-    - name: testheadless2h
-      run: cd eform-angular-frontend/eform-client && npm run testheadless2h
+    - name: testheadless2${{matrix.test}}
+      run: cd eform-angular-frontend/eform-client && npm run testheadless2${{matrix.test}}
   items-planning-build:
     runs-on: ubuntu-latest
     steps:
@@ -826,9 +816,49 @@ jobs:
       run: dotnet build --configuration Release --no-restore eform-service-workflow-plugin
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-workflow-plugin/ServiceWorkflowPlugin.Integration.Test/ServiceWorkflowPlugin.Integration.Test.csproj
+  backend-configuration-service-build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 'Preparing eform-service-backendconfiguration-plugin checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-backendconfiguration-plugin
+        ref: stable
+        path: eform-service-backendconfiguration-plugin
+    - uses: getong/mariadb-action@v1.1
+      with:
+        host port: 3306 # Optional, default value is 3306. The port of host
+        container port: 3306 # Optional, default value is 3306. The port of container
+        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
+        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
+        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
+        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
+        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
+        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
+    - name: Sleep 15 seconds
+      run: sleep 15
+    - uses: getong/rabbitmq-action@v1.2
+      with:
+        rabbitmq version: '3.8.9-management'
+        host port: 5672
+        rabbitmq user: 'admin'
+        rabbitmq password: 'password'
+        rabbitmq vhost: 'vhost_name'
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+    - name: Install dependencies
+      run: dotnet restore eform-service-backendconfiguration-plugin
+    - name: Build
+      run: dotnet build --configuration Release --no-restore eform-service-backendconfiguration-plugin
+    - name: Unit Tests
+      run: dotnet test --no-restore -c Release -v n eform-service-backendconfiguration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
   deploy:
-    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
-    runs-on: self-hosted
+    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -940,8 +970,8 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    needs: [frontend-build, items-planning-build, work-order-build, backend-pn-build, timeplanning-pn-build, service-build, work-order-service-build, items-planning-service-build, workflow-build, workflow-service-build, timeplanning-service-build]
-    runs-on: self-hosted
+    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
       with:
@@ -981,6 +1011,13 @@ jobs:
         repository: microting/eform-service-timeplanning-plugin
         ref: stable
         path: eform-service-timeplanning-plugin
+    - name: 'Preparing BackendConfiguration checkout'
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+        repository: microting/eform-service-backendconfiguration-plugin
+        ref: stable
+        path: eform-service-backendconfiguration-plugin
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -996,6 +1033,9 @@ jobs:
     - name: Get the TimePlanning version
       id: get_plugin4_version
       run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+    - name: Get the Backend Configuration version
+      id: get_plugin5_version
+      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the service version
       id: get_service_version
       run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -1008,7 +1048,7 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }}
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
