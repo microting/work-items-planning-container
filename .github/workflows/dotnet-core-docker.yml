@@ -857,6 +857,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-backendconfiguration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
   deploy:
+    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -969,6 +970,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
+    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
