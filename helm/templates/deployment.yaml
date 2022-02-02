@@ -50,8 +50,10 @@ spec:
               path: /auth
               port: 5000
           resources:
+            limits:
+              memory: "512Mi"
             requests:
-              memory: "400Mi"
+              memory: "256Mi"
               cpu: "100m"
           args:
             [
