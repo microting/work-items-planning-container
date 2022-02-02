@@ -83,7 +83,8 @@ RUN apt-get update && \
 		fonts-lyx \
 		fonts-sil-gentium \
 		fonts-texgyre \
-		fonts-tlwg-purisa && \
+		fonts-tlwg-purisa \
+		htop && \
 	apt-get -y -q remove libreoffice-gnome && \
 	apt -y autoremove && \
 	rm -rf /var/lib/apt/lists/*
