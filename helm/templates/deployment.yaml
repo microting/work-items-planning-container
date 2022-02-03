@@ -40,12 +40,14 @@ spec:
           livenessProbe:
             initialDelaySeconds: 120
             periodSeconds: 120
+            timeoutSeconds: 3
             httpGet:
               path: /auth
               port: 5000
           readinessProbe:
             initialDelaySeconds: 120
             periodSeconds: 120
+            timeoutSeconds: 3
             httpGet:
               path: /auth
               port: 5000
