@@ -38,6 +38,7 @@ spec:
               containerPort: 5000
               protocol: TCP
           livenessProbe:
+            failureThreshold: 5
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 1
@@ -45,6 +46,7 @@ spec:
               path: /api/settings/default-locale
               port: 5000
           readinessProbe:
+            failureThreshold: 5
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 1
