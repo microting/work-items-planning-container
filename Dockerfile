@@ -51,6 +51,7 @@ COPY --from=node-env /app/dist wwwroot
 RUN rm connection.json; exit 0
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV Logging__Console__FormatterName=
 
 RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1
 RUN apt-get update && \
