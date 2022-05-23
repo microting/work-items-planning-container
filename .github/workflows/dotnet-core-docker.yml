@@ -509,6 +509,12 @@ jobs:
         repository: microting/eform-angular-items-planning-plugin
         ref: ${{ steps.extract_branch.outputs.branch }}
         path: eform-angular-items-planning-plugin
+    - name: 'Preparing TimePlanning checkout'
+      uses: actions/checkout@v2
+      with:
+        repository: microting/eform-angular-timeplanning-plugin
+        ref: ${{ github.event.pull_request.base.ref }}
+        path: eform-angular-timeplanning-plugin
     - name: Install dependencies
       run: dotnet restore eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Get the version
@@ -518,6 +524,8 @@ jobs:
       run: dotnet build eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Build ItemsPlanning
       run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+    - name: Build TimePlanning
+      run: dotnet build eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.Test/BackendConfiguration.Pn.Test.csproj
     - name: Sleep 15
@@ -525,6 +533,7 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
         cp -av eform-backendconfiguration-plugin/eform-client/src/app/plugins/modules/backend-configuration-pn eform-angular-frontend/eform-client/src/app/plugins/modules/backend-configuration-pn
         cp -av eform-backendconfiguration-plugin/eform-client/e2e/Tests/backend-configuration-settings eform-angular-frontend/eform-client/e2e/Tests/backend-configuration-settings
         cp -av eform-backendconfiguration-plugin/eform-client/e2e/Tests/backend-configuration-general eform-angular-frontend/eform-client/e2e/Tests/backend-configuration-general
@@ -534,9 +543,11 @@ jobs:
         cp -av eform-backendconfiguration-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
+        cp -av eform-angular-timeplanning-plugin/eFormAPI/eFormAPI.Web/Plugins/TimePlanning.Pn eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/TimePlanning.Pn
         cp -av eform-backendconfiguration-plugin/eFormAPI/eFormAPI.Web/Plugins/BackendConfiguration.Pn eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/BackendConfiguration.Pn
         cd eform-angular-frontend/eform-client && ../../eform-backendconfiguration-plugin/testinginstallpn.sh
         ../../eform-angular-items-planning-plugin/testinginstallpn.sh
+        ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: NPM install
