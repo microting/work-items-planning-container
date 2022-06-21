@@ -78,9 +78,22 @@ spec:
       {{- end }}
       {{- with .Values.affinity }}
       affinity:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.tolerations }}
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node.kubernetes.io/instance-type
+                operator: In
+                values:
+                - s-2vcpu-4gb
+              - key: node.kubernetes.io/instance-type
+                operator: NotIn
+                values:
+                - s-2vcpu-4gb-amd
+              - key: node.kubernetes.io/instance-type
+                operator: NotIn
+                values:
+                - s-1vcpu-2gb
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
