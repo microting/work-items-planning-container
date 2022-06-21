@@ -58,5 +58,12 @@ spec:
               requests:
                 memory: "64Mi"
                 cpu: "250m"
-          nodeSelector:
-            node.kubernetes.io/instance-type: s-1vcpu-2gb
+          affinity:
+            nodeAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                nodeSelectorTerms:
+                - matchExpressions:
+                  - key: node.kubernetes.io/instance-type
+                    operator: In
+                    values:
+                    - s-1vcpu-2gb
