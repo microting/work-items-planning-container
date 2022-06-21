@@ -94,6 +94,14 @@ affinity:
           operator: In
           values:
           - s-2vcpu-4gb
+        - key: node.kubernetes.io/instance-type
+          operator: NotIn
+          values:
+          - s-2vcpu-4gb-amd
+        - key: node.kubernetes.io/instance-type
+          operator: NotIn
+          values:
+          - s-1vcpu-2gb
 
 tolerations: []
 
