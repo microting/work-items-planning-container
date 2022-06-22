@@ -46,11 +46,6 @@ spec:
             "/Password=abc123456"
 
             ]
-      {{- with .Values.nodeSelector }}
-      nodeSelector:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}
-      {{- with .Values.affinity }}
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -68,6 +63,3 @@ spec:
                 operator: NotIn
                 values:
                 - s-1vcpu-2gb
-      tolerations:
-        {{- toYaml . | nindent 8 }}
-      {{- end }}

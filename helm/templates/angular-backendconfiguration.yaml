@@ -67,7 +67,7 @@ spec:
                 nodeSelectorTerms:
                 - matchExpressions:
                   - key: node.kubernetes.io/instance-type
-                    operator: NoIn
+                    operator: NotIn
                     values:
                     - s-2vcpu-4gb
                   - key: node.kubernetes.io/instance-type
