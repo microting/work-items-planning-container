@@ -258,15 +258,15 @@ primary:
   livenessProbe:
     enabled: true
     initialDelaySeconds: 120
-    periodSeconds: 10
-    timeoutSeconds: 1
-    failureThreshold: 3
+    periodSeconds: 30
+    timeoutSeconds: 20
+    failureThreshold: 6
     successThreshold: 1
   readinessProbe:
     enabled: true
-    initialDelaySeconds: 30
-    periodSeconds: 10
-    timeoutSeconds: 1
+    initialDelaySeconds: 50
+    periodSeconds: 30
+    timeoutSeconds: 20
     failureThreshold: 3
     successThreshold: 1
 
@@ -524,7 +524,7 @@ secondary:
   ##
   resources:
     requests:
-      memory: "256Mi"
+      memory: "300Mi"
       cpu: "100m"
     # resources:
     # We usually recommend not to specify default resources and to leave this as a conscious
