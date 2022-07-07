@@ -267,8 +267,8 @@ primary:
     initialDelaySeconds: 50
     periodSeconds: 30
     timeoutSeconds: 20
-    failureThreshold: 3
-    successThreshold: 1
+    failureThreshold: 6
+    successThreshold: 2
 
   ## MariaDB primary custom liveness probe
   ##
