@@ -26,16 +26,14 @@ jobs:
         container port: 3306
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
-        mariadb version: '10.4.10'
+        mariadb version: 'latest'
         mysql database: 'some_test'
         mysql root password: 'secretpassword'
         mysql user: 'developer'
         mysql password: 'passwordtoo'
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.2-management-alpine'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -47,7 +45,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -96,16 +94,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -116,7 +112,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -184,16 +180,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -204,7 +198,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -269,16 +263,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -289,7 +281,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -312,8 +304,6 @@ jobs:
       run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
-    - name: Sleep 15 seconds
-      run: sleep 15
     - name: Load DB dump
       run: |
         mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
@@ -368,16 +358,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -388,7 +376,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -469,16 +457,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -489,7 +475,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -581,16 +567,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -601,7 +585,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -689,16 +673,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -729,16 +711,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -769,16 +749,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -809,16 +787,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -849,16 +825,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
