@@ -565,7 +565,7 @@ persistence:
 
   ## If you change this value, you might have to adjust `rabbitmq.diskFreeLimit` as well.
   ##
-  size: 8Gi
+  size: 2Gi
 
   volumes:
   #  - name: volume_name
