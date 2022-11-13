@@ -18,14 +18,12 @@ ARG PLUGIN6VERSION
 # Copy csproj and restore as distinct layers
 COPY eform-angular-frontend/eFormAPI/eFormAPI.Web ./eFormAPI.Web
 COPY eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn ./ItemsPlanning.Pn
-COPY eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn ./WorkOrders.Pn
 COPY eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn ./Workflow.Pn
 COPY eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn ./TimePlanning.Pn
 COPY eform-angular-greate-belt-plugin/eFormAPI/Plugins/GreateBelt.Pn ./GreateBelt.Pn
 COPY eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn ./BackendConfiguration.Pn
 RUN dotnet publish eFormAPI.Web -o eFormAPI.Web/out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish ItemsPlanning.Pn -o ItemsPlanning.Pn/out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuration Release
-RUN dotnet publish WorkOrders.Pn -o WorkOrders.Pn/out /p:Version=$PLUGIN2VERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish Workflow.Pn -o Workflow.Pn/out /p:Version=$PLUGIN3VERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish TimePlanning.Pn -o TimePlanning.Pn/out /p:Version=$PLUGIN5VERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish BackendConfiguration.Pn -o BackendConfiguration.Pn/out /p:Version=$PLUGIN4VERSION --runtime linux-x64 --configuration Release
@@ -36,13 +34,11 @@ FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
-RUN mkdir -p ./Plugins/WorkOrders.Pn
 RUN mkdir -p ./Plugins/Workflow.Pn
 RUN mkdir -p ./Plugins/TimePlanning.Pn
 RUN mkdir -p ./Plugins/BackendConfiguration.Pn
 RUN mkdir -p ./Plugins/GreateBelt.Pn
 COPY --from=build-env /app/ItemsPlanning.Pn/out ./Plugins/ItemsPlanning.Pn
-COPY --from=build-env /app/WorkOrders.Pn/out ./Plugins/WorkOrders.Pn
 COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
 COPY --from=build-env /app/BackendConfiguration.Pn/out ./Plugins/BackendConfiguration.Pn
 COPY --from=build-env /app/TimePlanning.Pn/out ./Plugins/TimePlanning.Pn
