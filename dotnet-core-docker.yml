@@ -26,16 +26,14 @@ jobs:
         container port: 3306
         character set server: 'utf8'
         collation server: 'utf8_general_ci'
-        mariadb version: '10.4.10'
+        mariadb version: 'latest'
         mysql database: 'some_test'
         mysql root password: 'secretpassword'
         mysql user: 'developer'
         mysql password: 'passwordtoo'
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.2-management-alpine'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -47,7 +45,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -96,16 +94,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -116,7 +112,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -184,16 +180,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -204,7 +198,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -269,16 +263,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -289,7 +281,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -312,8 +304,6 @@ jobs:
       run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
-    - name: Sleep 15 seconds
-      run: sleep 15
     - name: Load DB dump
       run: |
         mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
@@ -351,103 +341,12 @@ jobs:
         cat dotnet_log
         cat eform-angular-frontend/eform-client/npm_log
         mysql -u root --password=secretpassword -e "show databases" -h localhost
-  work-order-build:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        path: main
-    - name: Upgrade Chrome browser
-      run: |
-        sudo apt-get update
-        sudo apt-get --only-upgrade install google-chrome-stable
-        google-chrome --version
-    - uses: getong/mariadb-action@v1.1
-      with:
-        host port: 3306 # Optional, default value is 3306. The port of host
-        container port: 3306 # Optional, default value is 3306. The port of container
-        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
-        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
-        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
-        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
-    - uses: getong/rabbitmq-action@v1.2
-      with:
-        rabbitmq version: '3.8.9-management'
-        host port: 5672
-        rabbitmq user: 'admin'
-        rabbitmq password: 'password'
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-    - name: Use Node.js
-      uses: actions/setup-node@v1
-      with:
-        node-version: '14.16.1'
-    - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v2
-      with:
-        repository: microting/eform-angular-frontend
-        ref: stable
-        path: eform-angular-frontend
-    - name: 'Preparing work order checkout'
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        repository: microting/eform-angular-work-orders-plugin
-        ref: stable
-        path: eform-angular-work-orders-plugin
-    - name: Install dependencies
-      run: dotnet restore eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::$(echo $GITHUB_REF | cut -d / -f 3 | cut -d "v" -f 2)
-    - name: Build
-      run: dotnet build eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.sln
-    - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-angular-work-orders-plugin/eFormAPI/Plugins/WorkOrders.Pn/WorkOrders.Pn.Test/WorkOrders.Pn.Test.csproj
-    - name: Sleep 15
-      run: sleep 15
-    - name: Load DB dump
-      run: |
-        mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-work-orders-plugin`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_SDK`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-work-orders-plugin < eform-angular-work-orders-plugin/420_eform-angular-work-orders-plugin.sql
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_SDK < eform-angular-work-orders-plugin/420_SDK.sql
-    - name: Copy dependencies
-      run: |
-        cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
-        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Tests/workorders-settings eform-angular-frontend/eform-client/e2e/Tests/workorders-settings
-        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Tests/workorders-general eform-angular-frontend/eform-client/e2e/Tests/workorders-general
-        cp -av eform-angular-work-orders-plugin/eform-client/e2e/Page\ objects/WorkOrders eform-angular-frontend/eform-client/e2e/Page\ objects/WorkOrders
-        cp -av eform-angular-work-orders-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-        cp -av eform-angular-work-orders-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
-        mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av eform-angular-work-orders-plugin/eFormAPI/eFormAPI.Web/Plugins/WorkOrders eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/WorkOrders
-        cd eform-angular-frontend/eform-client && ../../eform-angular-work-orders-plugin/testinginstallpn.sh
-    - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
-    - name: NPM install
-      run: cd eform-angular-frontend/eform-client && npm install
-    - name: NPM start
-      run: cd eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Dotnet run
-      run: dotnet run --project eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Configuration testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: Plugin testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
   backend-pn-build:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [a,b,c,d]
     steps:
     - uses: actions/checkout@v2
       with:
@@ -457,22 +356,26 @@ jobs:
         sudo apt-get update
         sudo apt-get --only-upgrade install google-chrome-stable
         google-chrome --version
+    - name: Install ubuntu dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get -y -q install libxml2 libgdiplus libc6-dev libreoffice libreoffice-writer ure libreoffice-java-common libreoffice-core libreoffice-common fonts-opensymbol hyphen-fr hyphen-de hyphen-en-us hyphen-it hyphen-ru fonts-dejavu fonts-dejavu-core fonts-dejavu-extra fonts-droid-fallback fonts-dustin fonts-f500 fonts-fanwood fonts-freefont-ttf fonts-liberation fonts-lmodern fonts-lyx fonts-sil-gentium fonts-texgyre fonts-tlwg-purisa htop
+        sudo apt-get -y -q remove libreoffice-gnome
+        sudo adduser --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
     - uses: getong/mariadb-action@v1.1
       with:
         host port: 3306 # Optional, default value is 3306. The port of host
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -483,7 +386,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -503,6 +406,12 @@ jobs:
         repository: microting/eform-angular-items-planning-plugin
         ref: ${{ steps.extract_branch.outputs.branch }}
         path: eform-angular-items-planning-plugin
+    - name: 'Preparing TimePlanning checkout'
+      uses: actions/checkout@v2
+      with:
+        repository: microting/eform-angular-timeplanning-plugin
+        ref: ${{ github.event.pull_request.base.ref }}
+        path: eform-angular-timeplanning-plugin
     - name: Install dependencies
       run: dotnet restore eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Get the version
@@ -512,6 +421,8 @@ jobs:
       run: dotnet build eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Build ItemsPlanning
       run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
+    - name: Build TimePlanning
+      run: dotnet build eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.Test/BackendConfiguration.Pn.Test.csproj
     - name: Sleep 15
@@ -519,18 +430,21 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
         cp -av eform-backendconfiguration-plugin/eform-client/src/app/plugins/modules/backend-configuration-pn eform-angular-frontend/eform-client/src/app/plugins/modules/backend-configuration-pn
         cp -av eform-backendconfiguration-plugin/eform-client/e2e/Tests/backend-configuration-settings eform-angular-frontend/eform-client/e2e/Tests/backend-configuration-settings
         cp -av eform-backendconfiguration-plugin/eform-client/e2e/Tests/backend-configuration-general eform-angular-frontend/eform-client/e2e/Tests/backend-configuration-general
         cp -av eform-backendconfiguration-plugin/eform-client/e2e/Page\ objects/BackendConfiguration eform-angular-frontend/eform-client/e2e/Page\ objects/BackendConfiguration
         cp -av eform-angular-items-planning-plugin/eform-client/e2e/Page\ objects/ItemsPlanning eform-angular-frontend/eform-client/e2e/Page\ objects/ItemsPlanning
-        cp -av eform-backendconfiguration-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
+        cp -av eform-backendconfiguration-plugin/eform-client/wdio-headless-plugin-step2${{matrix.test}}.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2${{matrix.test}}.conf.js
         cp -av eform-backendconfiguration-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cp -av eform-angular-items-planning-plugin/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/ItemsPlanning
+        cp -av eform-angular-timeplanning-plugin/eFormAPI/eFormAPI.Web/Plugins/TimePlanning.Pn eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/TimePlanning.Pn
         cp -av eform-backendconfiguration-plugin/eFormAPI/eFormAPI.Web/Plugins/BackendConfiguration.Pn eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/BackendConfiguration.Pn
         cd eform-angular-frontend/eform-client && ../../eform-backendconfiguration-plugin/testinginstallpn.sh
         ../../eform-angular-items-planning-plugin/testinginstallpn.sh
+        ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: NPM install
@@ -546,7 +460,7 @@ jobs:
     - name: Configuration testing
       run: cd eform-angular-frontend/eform-client && npm run testheadless
     - name: Plugin testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
+      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
   timeplanning-pn-build:
     runs-on: ubuntu-latest
     steps:
@@ -564,16 +478,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -584,7 +496,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v1
       with:
-        node-version: '14.16.1'
+        node-version: '14.18'
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v2
       with:
@@ -672,16 +584,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -696,46 +606,6 @@ jobs:
       run: dotnet build --configuration Release --no-restore eform-service-timeplanning-plugin
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-timeplanning-plugin/ServiceTimePlanningPlugin.Integration.Test/ServiceTimePlanningPlugin.Integration.Test.csproj
-  work-order-service-build:
-    runs-on: ubuntu-latest
-    steps:
-    - name: 'Preparing eform-service-workorder-plugin checkout'
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-workorder-plugin
-        ref: stable
-        path: eform-service-workorder-plugin
-    - uses: getong/mariadb-action@v1.1
-      with:
-        host port: 3306 # Optional, default value is 3306. The port of host
-        container port: 3306 # Optional, default value is 3306. The port of container
-        character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
-        collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
-        mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
-        mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
-        mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
-        mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
-    - uses: getong/rabbitmq-action@v1.2
-      with:
-        rabbitmq version: '3.8.9-management'
-        host port: 5672
-        rabbitmq user: 'admin'
-        rabbitmq password: 'password'
-        rabbitmq vhost: 'vhost_name'
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: 6.0.x
-    - name: Install dependencies
-      run: dotnet restore eform-service-workorder-plugin
-    - name: Build
-      run: dotnet build --configuration Release --no-restore eform-service-workorder-plugin
-    - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-service-workorder-plugin/ServiceWorkOrdersPlugin.Integration.Test/ServiceWorkOrdersPlugin.Integration.Test.csproj
   items-planning-service-build:
     runs-on: ubuntu-latest
     steps:
@@ -752,16 +622,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -792,16 +660,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -832,16 +698,14 @@ jobs:
         container port: 3306 # Optional, default value is 3306. The port of container
         character set server: 'utf8' # Optional, default value is 'utf8mb4'. The '--character-set-server' option for mysqld
         collation server: 'utf8_general_ci' # Optional, default value is 'utf8mb4_general_ci'. The '--collation-server' option for mysqld
-        mariadb version: '10.4.10' # Optional, default value is "latest". The version of the MariaDB
+        mariadb version: 'latest' # Optional, default value is "latest". The version of the MariaDB
         mysql database: 'some_test' # Optional, default value is "test". The specified database which will be create
         mysql root password: 'secretpassword' # Required if "mysql user" is empty, default is empty. The root superuser password
         mysql user: 'developer' # Required if "mysql root password" is empty, default is empty. The superuser for the specified database. Can use secrets, too
         mysql password: 'passwordtoo' # Required if "mysql user" exists. The password for the "mysql user"
-    - name: Sleep 15 seconds
-      run: sleep 15
     - uses: getong/rabbitmq-action@v1.2
       with:
-        rabbitmq version: '3.8.9-management'
+        rabbitmq version: 'latest'
         host port: 5672
         rabbitmq user: 'admin'
         rabbitmq password: 'password'
@@ -857,7 +721,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-service-backendconfiguration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
   deploy:
-    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    needs: [frontend-build, items-planning-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
@@ -877,13 +741,6 @@ jobs:
         repository: microting/eform-angular-items-planning-plugin
         ref: stable
         path: eform-angular-items-planning-plugin
-    - name: 'Preparing work order checkout'
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        repository: microting/eform-angular-work-orders-plugin
-        ref: stable
-        path: eform-angular-work-orders-plugin
     - name: 'Preparing workflow checkout'
       uses: actions/checkout@v2
       with:
@@ -914,7 +771,6 @@ jobs:
         path: eform-angular-greate-belt-plugin
     - name: Copy dependencies
       run: |
-        cp -av eform-angular-work-orders-plugin/eform-client/src/app/plugins/modules/workorders-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workorders-pn
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
         cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
         cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
@@ -922,7 +778,6 @@ jobs:
         cp -av eform-backendconfiguration-plugin/eform-client/src/app/plugins/modules/backend-configuration-pn eform-angular-frontend/eform-client/src/app/plugins/modules/backend-configuration-pn
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
-        ../../eform-angular-work-orders-plugin/testinginstallpn.sh
         ../../eform-angular-workflow-plugin/testinginstallpn.sh
         ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
         ../../eform-backendconfiguration-plugin/testinginstallpn.sh
@@ -933,9 +788,6 @@ jobs:
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the work order version
-      id: get_plugin_version
-      run: echo ::set-output name=PLUGIN2VERSION::$(cd eform-angular-work-orders-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the work order version
       id: get_plugin3_version
       run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -970,7 +822,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    needs: [frontend-build, items-planning-build, work-order-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, work-order-service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    needs: [frontend-build, items-planning-build, workflow-build, timeplanning-pn-build, backend-pn-build, greate-belt-build, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
