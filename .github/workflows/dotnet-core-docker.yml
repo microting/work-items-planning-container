@@ -161,8 +161,6 @@ jobs:
       run: sleep 75
     - name: Configuration testing
       run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: Plugin testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
   greate-belt-build:
     runs-on: ubuntu-latest
     steps:
@@ -221,31 +219,6 @@ jobs:
       run: dotnet build eform-angular-greate-belt-plugin/eFormAPI/Plugins/GreateBelt.Pn/GreateBelt.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-greate-belt-plugin/eFormAPI/Plugins/GreateBelt.Pn/GreateBelt.Pn.Test/GreateBelt.Pn.Test.csproj
-    - name: Copy dependencies
-      run: |
-        cp -av eform-angular-greate-belt-plugin/eform-client/src/app/plugins/modules/greate-belt-pn eform-angular-frontend/eform-client/src/app/plugins/modules/greate-belt-pn
-        mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av eform-angular-greate-belt-plugin/eFormAPI/eFormAPI.Web/Plugins/GreateBelt.Pn eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/GreateBelt.Pn
-        cd eform-angular-frontend/eform-client && ../../eform-angular-greate-belt-plugin/testinginstallpn.sh
-    - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
-    - name: NPM install
-      run: cd eform-angular-frontend/eform-client && npm install
-    - name: NPM start
-      run: cd eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Dotnet run
-      run: dotnet run --project eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Configuration testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: The job has failed
-      if: always()
-      run: |
-        cat dotnet_log
-        cat eform-angular-frontend/eform-client/npm_log
   workflow-build:
     runs-on: ubuntu-latest
     steps:
@@ -304,43 +277,6 @@ jobs:
       run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
-    - name: Load DB dump
-      run: |
-        mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
-    - name: Copy dependencies
-      run: |
-        cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-settings eform-angular-frontend/eform-client/e2e/Tests/workflow-settings
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-general eform-angular-frontend/eform-client/e2e/Tests/workflow-general
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Page\ objects/Workflow eform-angular-frontend/eform-client/e2e/Page\ objects/Workflow
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-headless-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.js
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-plugin-step2.conf.js eform-angular-frontend/eform-client/wdio-plugin-step2.conf.js
-        mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
-        cp -av eform-angular-workflow-plugin/eFormAPI/eFormAPI.Web/Plugins/Workflow eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins/Workflow
-        cd eform-angular-frontend/eform-client && ../../eform-angular-workflow-plugin/testinginstallpn.sh
-    - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln
-    - name: NPM install
-      run: cd eform-angular-frontend/eform-client && npm install
-    - name: NPM start
-      run: cd eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Dotnet run
-      run: dotnet run --project eform-angular-frontend/eFormAPI/eFormAPI.Web/eFormAPI.Web.csproj > dotnet_log 2>&1 &
-    - name: Sleep 75 seconds
-      run: sleep 75
-    - name: Configuration testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadless
-    - name: Plugin testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
-    - name: The job has failed
-      if: ${{ failure() }}
-      run: |
-        cat dotnet_log
-        cat eform-angular-frontend/eform-client/npm_log
-        mysql -u root --password=secretpassword -e "show databases" -h localhost
   backend-pn-build:
     runs-on: ubuntu-latest
     strategy:
@@ -449,6 +385,8 @@ jobs:
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: NPM install
       run: cd eform-angular-frontend/eform-client && npm install
+    - name: Create errorShots directory
+      run: mkdir /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots
     - name: NPM start
       run: cd eform-angular-frontend/eform-client && npm start > npm_log 2>&1 &
     - name: Sleep 75 seconds
@@ -461,6 +399,19 @@ jobs:
       run: cd eform-angular-frontend/eform-client && npm run testheadless
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
+    - name: The job has failed
+      if: always()
+      run: |
+        cat dotnet_log
+        cat eform-angular-frontend/eform-client/npm_log
+    - name: Archive screenshot artifacts
+      if: ${{ failure() }}
+      uses: actions/upload-artifact@v3
+      with:
+        name: error Screenshots
+        path: |
+          /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/chrome*.png
+        retention-days: 2
   timeplanning-pn-build:
     runs-on: ubuntu-latest
     steps:
@@ -647,7 +598,7 @@ jobs:
   workflow-service-build:
     runs-on: ubuntu-latest
     steps:
-    - name: 'Preparing eform-service-workorder-plugin checkout'
+    - name: 'Preparing eform-service-workflow-plugin checkout'
       uses: actions/checkout@v2
       with:
         fetch-depth: 0
@@ -842,13 +793,6 @@ jobs:
         repository: microting/eform-service-items-planning-plugin
         ref: stable
         path: eform-service-items-planning-plugin
-    - name: 'Preparing work order checkout'
-      uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-workorder-plugin
-        ref: stable
-        path: eform-service-workorder-plugin
     - name: 'Preparing workflow checkout'
       uses: actions/checkout@v2
       with:
@@ -876,9 +820,6 @@ jobs:
     - name: Get the version
       id: get_version
       run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the work order version
-      id: get_plugin_version
-      run: echo ::set-output name=PLUGIN2VERSION::$(cd eform-service-workorder-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
     - name: Get the workflow version
       id: get_plugin3_version
       run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -900,7 +841,7 @@ jobs:
         username: renemadsen
         password: zd8237EA
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
