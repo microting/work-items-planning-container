@@ -24,25 +24,25 @@ COPY eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn ./TimePl
 COPY eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn ./BackendConfiguration.Pn
 RUN dotnet publish eFormAPI.Web -o eFormAPI.Web/out /p:Version=$GITVERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish ItemsPlanning.Pn -o ItemsPlanning.Pn/out /p:Version=$PLUGINVERSION --runtime linux-x64 --configuration Release
-RUN dotnet publish Workflow.Pn -o Workflow.Pn/out /p:Version=$PLUGIN3VERSION --runtime linux-x64 --configuration Release
+#RUN dotnet publish Workflow.Pn -o Workflow.Pn/out /p:Version=$PLUGIN3VERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish TimePlanning.Pn -o TimePlanning.Pn/out /p:Version=$PLUGIN5VERSION --runtime linux-x64 --configuration Release
 RUN dotnet publish BackendConfiguration.Pn -o BackendConfiguration.Pn/out /p:Version=$PLUGIN4VERSION --runtime linux-x64 --configuration Release
-RUN dotnet publish GreateBelt.Pn -o GreateBelt.Pn/out /p:Version=$PLUGIN6VERSION --runtime linux-x64 --configuration Release
+#RUN dotnet publish GreateBelt.Pn -o GreateBelt.Pn/out /p:Version=$PLUGIN6VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
 COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
-RUN mkdir -p ./Plugins/Workflow.Pn
+#RUN mkdir -p ./Plugins/Workflow.Pn
 RUN mkdir -p ./Plugins/TimePlanning.Pn
 RUN mkdir -p ./Plugins/BackendConfiguration.Pn
-RUN mkdir -p ./Plugins/GreateBelt.Pn
+#RUN mkdir -p ./Plugins/GreateBelt.Pn
 COPY --from=build-env /app/ItemsPlanning.Pn/out ./Plugins/ItemsPlanning.Pn
-COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
+#COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
 COPY --from=build-env /app/BackendConfiguration.Pn/out ./Plugins/BackendConfiguration.Pn
 COPY --from=build-env /app/TimePlanning.Pn/out ./Plugins/TimePlanning.Pn
-COPY --from=build-env /app/GreateBelt.Pn/out ./Plugins/GreateBelt.Pn
+#COPY --from=build-env /app/GreateBelt.Pn/out ./Plugins/GreateBelt.Pn
 COPY --from=node-env /app/dist wwwroot
 RUN rm connection.json; exit 0
 
