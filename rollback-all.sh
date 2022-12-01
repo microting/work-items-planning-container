@@ -1,6 +1,6 @@
 #!/bin/bash
 
-CUSTOMERS=('924')
+CUSTOMERS=('855')
 
 for CUSTOMER in ${CUSTOMERS[@]}; do
   echo "Rolling back customer with no $CUSTOMER"
