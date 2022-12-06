@@ -57,7 +57,7 @@ spec:
               memory: "612Mi"
             requests:
               memory: "356Mi"
-              cpu: "200m"
+              cpu: "150m"
           args:
             [
             "/ConnectionString=Persist Security Info=True;host={{ include "angularfrontend.databaseHost" . }};Database={{ regexReplaceAll "frontend-(x*)" .Release.Name "$1" }}_Angular;user = root; password = secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;",
