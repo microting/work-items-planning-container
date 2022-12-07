@@ -45,12 +45,11 @@ spec:
             tcpSocket:
               port: 5000
           readinessProbe:
-            failureThreshold: 5
+            failureThreshold: 20
             initialDelaySeconds: 10
             periodSeconds: 30
             timeoutSeconds: 3
-            httpGet:
-              path: /api/settings/default-locale
+            tcpSocket:
               port: 5000
           resources:
             limits:
