@@ -86,7 +86,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: stable
         path: main
     - name: Upgrade Chrome browser
       run: |
@@ -183,7 +182,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: stable
         path: main
     - name: Upgrade Chrome browser
       run: |
@@ -242,7 +240,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: stable
         path: main
     - name: Upgrade Chrome browser
       run: |
@@ -305,7 +302,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: stable
         path: main
     - name: Upgrade Chrome browser
       run: |
@@ -437,7 +433,6 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        ref: stable
         path: eform-angular-timeplanning-plugin
     - name: Upgrade Chrome browser
       run: |
