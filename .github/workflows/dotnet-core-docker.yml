@@ -773,20 +773,14 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        build-args: |
-          GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }}
-          PLUGINVERSION=${{ steps.get_version.outputs.VERSION }}
-          PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }}
-          PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }}
-          PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }}
-          PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
-          PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }}
-        push: true
-        tags: microtingas/microtingas/work-items-planning-container:latest,microtingas/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Build the tagged Docker image
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }} --build-arg PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }}
+    - name: Tag builds
+      run: |-
+        docker tag microtingas/work-items-planning-container:latest registry.microting.com/microtingas/work-items-planning-container:latest
+        docker tag microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Push the tagged Docker image
+      run: docker push microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
@@ -856,17 +850,13 @@ jobs:
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build and push
-      id: docker_build
-      uses: docker/build-push-action@v2
-      with:
-        build-args: |
-          GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }}
-          PLUGINVERSION=${{ steps.get_version.outputs.VERSION }}
-          PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }}
-          PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }}
-          PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
-        push: true
-        tags: microtingas/work-items-planning-service-container:latest,microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Build the tagged Docker image
+      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
+    - name: Tag builds
+      run: |-
+        docker tag microtingas/work-items-planning-service-container:latest registry.microting.com/microtingas/work-items-planning-service-container:latest
+        docker tag microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} registry.microting.com/microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Push the tagged Docker image
+      run: docker push microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
