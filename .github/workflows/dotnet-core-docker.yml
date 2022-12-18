@@ -779,8 +779,10 @@ jobs:
       run: |-
         docker tag microtingas/work-items-planning-container:latest microtingas/work-items-planning-container:latest
         docker tag microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
-    - name: Push the tagged Docker image
+    - name: Push the version Docker image
       run: docker push microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Push the tagged Docker image
+      run: docker push microtingas/work-items-planning-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
@@ -839,6 +841,18 @@ jobs:
       run: |
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
         docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -882,9 +896,11 @@ jobs:
     - name: Get standard output
       run: |
         cat docker_run_log
-        result=`cat main/docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
-        if [ $result -eq 1 ];then exit 0; fi
-    - name: Push the tagged Docker image
+        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
+        if [ $result -ne 1 ];then exit 1; fi
+    - name: Push the version Docker image
       run: docker push microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
+    - name: Push the tagged Docker image
+      run: docker push microtingas/work-items-planning-service-container:latest
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
