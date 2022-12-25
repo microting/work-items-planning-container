@@ -1165,7 +1165,7 @@ jobs:
     - name: Sleep 75 seconds for letting the container start and generate some output we can
       run: sleep 75
     - name: Get standard output
-      run: echo main/docker_run_log
+      run: cat main/docker_run_log
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
