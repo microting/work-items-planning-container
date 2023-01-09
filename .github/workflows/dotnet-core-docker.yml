@@ -1032,6 +1032,8 @@ jobs:
         repository: microting/eform-service-timeplanning-plugin
         ref: stable
         path: eform-service-timeplanning-plugin
+    - name: Sleep 15
+      run: sleep 15
     - name: Load DB dump
       run: |
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
