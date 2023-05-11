@@ -661,9 +661,6 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - uses: actions/checkout@v3
-      with:
-        path: main
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
@@ -719,6 +716,9 @@ jobs:
         ../../eform-backendconfiguration-plugin/testinginstallpn.sh
         ../../eform-angular-workflow-plugin/testinginstallpn.sh
         ../../eform-angular-greate-belt-plugin/testinginstallpn.sh
+    - name: Check nuget package versions
+      run: |
+        python3 main/extract_packages.py
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -1408,6 +1408,9 @@ jobs:
         repository: microting/eform-service-backendconfiguration-plugin
         ref: stable
         path: eform-service-backendconfiguration-plugin
+    - name: Check nuget package versions
+      run: |
+        python3 main/extract_packages.py
     - name: Load DB dump
       run: |
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
