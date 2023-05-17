@@ -1368,11 +1368,11 @@ jobs:
     - name: Start MariaDB
       run: |
         docker pull mariadb:latest
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:latest
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:latest
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
-        docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+        docker run -d --hostname my-rabbit --name some-rabbit --network data -p 5672:5672 -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
     - name: 'Preparing Debian Service checkout'
       uses: actions/checkout@v3
       with:
@@ -1414,19 +1414,19 @@ jobs:
     - name: Load DB dump
       run: |
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < eform-service-backendconfiguration-plugin/420_SDK.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < eform-service-backendconfiguration-plugin/420_Angular.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < eform-service-backendconfiguration-plugin/420_eform-backend-configuration-plugin.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-time-planning-plugin.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-items-planning-plugin.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-case-template-plugin.sql
         docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
+        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < eform-service-backendconfiguration-plugin/420_chemical-base-plugin.sql
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -1474,7 +1474,13 @@ jobs:
     - name: Sleep 75 seconds for letting the container start and generate some output we can
       run: sleep 75
     - name: Get standard output
-      run: echo main/docker_run_log
+      run: cat docker_run_log
+    - name: Compile eformparsed test program
+      run: |
+        dotnet build --configuration Release eform-service-backendconfiguration-plugin/ci/eformparsed/
+    - name: run eformparsed test program
+      run: |
+        dotnet eform-service-backendconfiguration-plugin/ci/eformparsed/bin/Release/net7.0/eformparsed.dll
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
@@ -1482,6 +1488,11 @@ jobs:
         cat docker_run_log
         result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
+    - run: docker save microtingas/work-items-planning-service-container:latest -o work-items-planning-service-container.tar
+    - uses: actions/upload-artifact@v3
+      with:
+        name: work-items-planning-service-container
+        path: work-items-planning-service-container.tar
   deploy:
     needs: [frontend-test, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-test, timeplanning-pn-dotnet-test, backend-pn-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
@@ -1495,7 +1506,7 @@ jobs:
     - uses: actions/download-artifact@v3
       with:
         name: work-items-planning-container
-    - run: docker load -i work-items-planning-container.tar        
+    - run: docker load -i work-items-planning-container.tar
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
@@ -1521,112 +1532,22 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - name: Create docker network 🖧
-      run: docker network create --driver bridge data
-    - name: Start MariaDB
-      run: |
-        docker pull mariadb:latest
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:latest
-    - name: Start rabbitmq
-      run: |
-        docker pull rabbitmq:latest
-        docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
-    - name: 'Preparing Debian Service checkout'
-      uses: actions/checkout@v3
+    - uses: actions/download-artifact@v3
       with:
-        fetch-depth: 0
-        repository: microting/eform-debian-service
-        ref: stable
-        path: eform-debian-service
-    - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-items-planning-plugin
-        ref: stable
-        path: eform-service-items-planning-plugin
-    - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-workflow-plugin
-        ref: stable
-        path: eform-service-workflow-plugin
-    - name: 'Preparing TimePlanning checkout'
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-timeplanning-plugin
-        ref: stable
-        path: eform-service-timeplanning-plugin
-    - name: 'Preparing BackendConfiguration checkout'
-      uses: actions/checkout@v3
-      with:
-        fetch-depth: 0
-        repository: microting/eform-service-backendconfiguration-plugin
-        ref: stable
-        path: eform-service-backendconfiguration-plugin
-    - name: Load DB dump
-      run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
+        name: work-items-planning-service-container
+    - run: docker load -i work-items-planning-service-container.tar
     - name: Get the version release
       id: get_release_version
       run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the version
-      id: get_version
-      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the workflow version
-      id: get_plugin3_version
-      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the TimePlanning version
-      id: get_plugin4_version
-      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the Backend Configuration version
-      id: get_plugin5_version
-      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Get the service version
-      id: get_service_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
-    - name: Copy Docker file
-      run: cp main/Dockerfile-service Dockerfile
     - name: Login to DockerHub
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-service-container:latest -t microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_service_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-service-container:latest microtingas/work-items-planning-service-container:latest
-        docker tag microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }} microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
-    - name: Start the newly build Docker container
-      id: docker-run
-      run: docker run --name my-container --network data microtingas/work-items-planning-service-container:latest "/ConnectionString=host=mariadbtest;Database=420_SDK;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
-    - name: Sleep 75 seconds for letting the container start and generate some output we can
-      run: sleep 75
-    - name: Get standard output
-      run: cat docker_run_log
-    - name: Stop the newly build Docker container
-      run: docker stop my-container
-    - name: Get standard output
-      run: |
-        cat docker_run_log
-        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
-        if [ $result -ne 1 ];then exit 1; fi
+        docker tag microtingas/work-items-planning-service-container:latest microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the version Docker image
       run: docker push microtingas/work-items-planning-service-container:${{ steps.get_release_version.outputs.VERSION }}
     - name: Push the tagged Docker image
