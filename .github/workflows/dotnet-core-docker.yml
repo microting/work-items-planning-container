@@ -7,7 +7,7 @@ on:
 
 jobs:
   frontend-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -131,7 +131,7 @@ jobs:
         retention-days: 2
   frontend-test-dotnet:
     needs: frontend-build
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -165,7 +165,7 @@ jobs:
     - name: Integration Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-frontend/eFormAPI/eFormAPI.Web.Integration.Tests/eFormAPI.Web.Integration.Tests.csproj
   items-planning-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
         with:
@@ -304,7 +304,7 @@ jobs:
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/*.png
         retention-days: 2
   items-planning-test-dotnet:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -333,7 +333,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.Test/ItemsPlanning.Pn.Test.csproj
   greate-belt-pn-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -478,7 +478,7 @@ jobs:
           eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
   greatebelt-dotnet-test:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -503,7 +503,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-greate-belt-plugin/eFormAPI/Plugins/GreateBelt.Pn/GreateBelt.Pn.Test/GreateBelt.Pn.Test.csproj
   workflow-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -638,7 +638,7 @@ jobs:
       run: |
         cat docker_run_log
   workflow-dotnet-test:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -667,7 +667,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.Test/Workflow.Pn.Test.csproj
   backend-pn-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -908,7 +908,7 @@ jobs:
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/cypress/videos/*.mp4
         retention-days: 2
   backend-pn-test-dotnet:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -937,7 +937,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.Test/BackendConfiguration.Pn.Test.csproj
   timeplanning-pn-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: 'Preparing Time Planning checkout'
@@ -1097,7 +1097,7 @@ jobs:
           eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
   timeplanning-pn-dotnet-test:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
     - name: 'Preparing Time Planning checkout'
@@ -1128,7 +1128,7 @@ jobs:
     - name: Unit Tests
       run: dotnet test --no-restore -c Release -v n eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.Test/TimePlanning.Pn.Test.csproj
   service-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - name: 'Preparing debian-service checkout'
       uses: actions/checkout@v3
@@ -1148,7 +1148,7 @@ jobs:
     - name: Test
       run: dotnet test --no-restore --verbosity normal eform-debian-service
   timeplanning-service-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1242,7 +1242,7 @@ jobs:
         result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   items-planning-service-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1334,7 +1334,7 @@ jobs:
         result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   workflow-service-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1426,7 +1426,7 @@ jobs:
         result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   backend-configuration-service-build:
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1563,7 +1563,7 @@ jobs:
         path: work-items-planning-service-container.tar
   deploy:
     needs: [frontend-test, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-test, timeplanning-pn-dotnet-test, backend-pn-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1595,7 +1595,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
     needs: [frontend-test, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-test, timeplanning-pn-dotnet-test, backend-pn-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
-    runs-on: ubuntu-latest-4-cores
+    runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
       with:
