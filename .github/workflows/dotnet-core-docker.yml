@@ -20,7 +20,7 @@ jobs:
           path: eform-angular-frontend
       - name: Build Docker image
         id: build
-        run: cd eform-angular-frontend && docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0
+        run: cd eform-angular-frontend && docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
         shell: bash
       - run: docker save microtingas/frontend-container:latest -o container.tar
       - uses: actions/upload-artifact@v3
@@ -754,7 +754,7 @@ jobs:
     - name: Copy frontendfiles
       run: cp main/Dockerfile .
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }} --build-arg PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }}
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }} --build-arg PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }} --build-arg SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-container:latest microtingas/work-items-planning-container:latest
