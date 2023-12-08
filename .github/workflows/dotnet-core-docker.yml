@@ -63,7 +63,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
     - name: Create errorShots directory
@@ -234,7 +234,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
@@ -414,7 +414,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
@@ -570,7 +570,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing workflow checkout'
       uses: actions/checkout@v3
       with:
@@ -796,7 +796,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
@@ -1034,7 +1034,7 @@ jobs:
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
-        node-version: 18
+        node-version: 18.18.2
     - name: 'Preparing Frontend checkout'
       uses: actions/checkout@v3
       with:
