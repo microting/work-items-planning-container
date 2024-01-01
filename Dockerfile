@@ -10,7 +10,7 @@ RUN yarn install
 RUN yarn build
 RUN yarn sentrysourcemap
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0-bookworm-slim AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS build-env
 WORKDIR /app
 ARG GITVERSION
 ARG PLUGINVERSION
@@ -35,7 +35,7 @@ RUN dotnet publish BackendConfiguration.Pn -o BackendConfiguration.Pn/out /p:Ver
 RUN dotnet publish GreateBelt.Pn -o GreateBelt.Pn/out /p:Version=$PLUGIN6VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0-bookworm-slim
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim
 WORKDIR /app
 COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
