@@ -54,6 +54,8 @@ RUN rm connection.json; exit 0
 ENV DEBIAN_FRONTEND noninteractive
 ENV Logging__Console__FormatterName=
 
+RUN echo "deb http://deb.debian.org/debian bookworm contrib non-free" > /etc/apt/sources.list.d/contrib.list
+
 RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1
 RUN apt-get update && \
 	apt-get -y -q install \
@@ -72,6 +74,7 @@ RUN apt-get update && \
 		hyphen-en-us \
 		hyphen-it \
 		hyphen-ru \
+		fonts-ubuntu \
 		fonts-dejavu \
 		fonts-dejavu-core \
 		fonts-dejavu-extra \
