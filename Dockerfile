@@ -10,7 +10,7 @@ RUN yarn install
 RUN yarn build
 RUN yarn sentrysourcemap
 
-FROM mcr.microsoft.com/dotnet/sdk:8.0-bookworm-slim AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:8.0-jammy AS build-env
 WORKDIR /app
 ARG GITVERSION
 ARG PLUGINVERSION
@@ -35,7 +35,7 @@ RUN dotnet publish BackendConfiguration.Pn -o BackendConfiguration.Pn/out /p:Ver
 RUN dotnet publish GreateBelt.Pn -o GreateBelt.Pn/out /p:Version=$PLUGIN6VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0-bookworm-slim
+FROM mcr.microsoft.com/dotnet/aspnet:8.0-jammy
 WORKDIR /app
 COPY --from=build-env /app/eFormAPI.Web/out .
 RUN mkdir -p ./Plugins/ItemsPlanning.Pn
@@ -54,7 +54,7 @@ RUN rm connection.json; exit 0
 ENV DEBIAN_FRONTEND noninteractive
 ENV Logging__Console__FormatterName=
 
-RUN echo "deb http://deb.debian.org/debian bookworm contrib non-free" > /etc/apt/sources.list.d/contrib.list
+#RUN echo "deb http://deb.debian.org/debian bookworm contrib non-free" > /etc/apt/sources.list.d/contrib.list
 
 RUN mkdir -p /usr/share/man/man1mkdir -p /usr/share/man/man1
 RUN apt-get update && \
