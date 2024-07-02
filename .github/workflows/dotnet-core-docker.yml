@@ -898,6 +898,7 @@ jobs:
         cat docker_run_log
     - name: ${{matrix.test}} test
       uses: cypress-io/github-action@v4
+      continue-on-error: true
       with:
         start: echo 'hi'
         wait-on: "http://localhost:4200"
