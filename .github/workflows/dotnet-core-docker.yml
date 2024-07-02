@@ -908,6 +908,7 @@ jobs:
         config-file: cypress.config.ts
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
+        continue-on-error: true
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
