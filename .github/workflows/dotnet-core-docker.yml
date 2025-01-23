@@ -23,7 +23,7 @@ jobs:
         run: cd eform-angular-frontend && docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
         shell: bash
       - run: docker save microtingas/frontend-container:latest -o container.tar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: container
           path: container.tar
@@ -44,7 +44,7 @@ jobs:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: container
     - run: docker load -i container.tar
@@ -125,7 +125,7 @@ jobs:
         color: danger
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -199,7 +199,7 @@ jobs:
           docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg PLUGINVERSION=1.0.0
         shell: bash
       - run: docker save microtingas/frontend-container:latest -o items-planning-container.tar
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: items-planning-container
           path: items-planning-container.tar
@@ -214,7 +214,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: items-planning-container
     - run: docker load -i items-planning-container.tar
@@ -300,7 +300,7 @@ jobs:
         color: danger
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -377,7 +377,7 @@ jobs:
       run: |-
         docker tag microtingas/greate-belt-container:latest microtingas/greate-belt-container:latest
     - run: docker save microtingas/greate-belt-container:latest -o greate-belt-container.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: greate-belt-container
         path: greate-belt-container.tar
@@ -395,7 +395,7 @@ jobs:
         repository: microting/eform-angular-greate-belt-plugin
         ref: stable
         path: eform-angular-greate-belt-plugin
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: greate-belt-container
     - run: docker load -i greate-belt-container.tar
@@ -475,7 +475,7 @@ jobs:
         cat docker_run_log
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -554,7 +554,7 @@ jobs:
     - name: Build the tagged Docker image
       run: docker build . -t microtingas/workflow-container:latest -t microtingas/workflow-container:1.0.0 --build-arg GITVERSION=1.00 --build-arg PLUGINVERSION=1.0.0
     - run: docker save microtingas/workflow-container:latest -o workflow-container.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: workflow-container
         path: workflow-container.tar
@@ -571,7 +571,7 @@ jobs:
       run: |
         docker pull mariadb:10.8
         docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: workflow-container
     - run: docker load -i workflow-container.tar
@@ -772,7 +772,7 @@ jobs:
       run: |-
         docker tag microtingas/work-items-planning-container:latest microtingas/work-items-planning-container:latest
     - run: docker save microtingas/work-items-planning-container:latest -o work-items-planning-container.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: work-items-planning-container
         path: work-items-planning-container.tar        
@@ -787,7 +787,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: work-items-planning-container
     - run: docker load -i work-items-planning-container.tar
@@ -929,7 +929,7 @@ jobs:
         cat docker_run_log
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -937,7 +937,7 @@ jobs:
         retention-days: 2
     - name: Archive videos
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -1007,7 +1007,7 @@ jobs:
       run: |-
         docker tag microtingas/time-planning-container:latest microtingas/time-planning-container:latest
     - run: docker save microtingas/time-planning-container:latest -o time-planning-container.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: time-planning-container
         path: time-planning-container.tar
@@ -1027,7 +1027,7 @@ jobs:
         repository: microting/eform-angular-timeplanning-plugin
         ref: stable
         path: eform-angular-timeplanning-plugin
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: time-planning-container
     - run: docker load -i time-planning-container.tar
@@ -1127,7 +1127,7 @@ jobs:
         cat docker_run_log
     - name: Archive screenshot artifacts
       if: ${{ failure() }}
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: error Screenshots
         path: |
@@ -1594,7 +1594,7 @@ jobs:
         result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
     - run: docker save microtingas/work-items-planning-service-container:latest -o work-items-planning-service-container.tar
-    - uses: actions/upload-artifact@v3
+    - uses: actions/upload-artifact@v4
       with:
         name: work-items-planning-service-container
         path: work-items-planning-service-container.tar
@@ -1608,7 +1608,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: work-items-planning-container
     - run: docker load -i work-items-planning-container.tar
@@ -1637,7 +1637,7 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
-    - uses: actions/download-artifact@v3
+    - uses: actions/download-artifact@v4
       with:
         name: work-items-planning-service-container
     - run: docker load -i work-items-planning-service-container.tar
