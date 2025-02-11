@@ -48,7 +48,7 @@ COPY --from=build-env /app/Workflow.Pn/out ./Plugins/Workflow.Pn
 COPY --from=build-env /app/BackendConfiguration.Pn/out ./Plugins/BackendConfiguration.Pn
 COPY --from=build-env /app/TimePlanning.Pn/out ./Plugins/TimePlanning.Pn
 COPY --from=build-env /app/GreateBelt.Pn/out ./Plugins/GreateBelt.Pn
-COPY --from=node-env /app/dist wwwroot
+COPY --from=node-env /app/dist/browser wwwroot
 RUN rm connection.json; exit 0
 
 ENV DEBIAN_FRONTEND noninteractive
