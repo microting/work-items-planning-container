@@ -60,6 +60,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
@@ -154,6 +156,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -228,8 +232,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
-    - name: Sleep 15
-      run: sleep 15
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Start the newly build Docker container
       id: docker-run
       run: docker run --name my-container -p 4200:5000 --network data microtingas/frontend-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
@@ -409,6 +413,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Start the newly build Docker container
       id: docker-run
       run: docker run --name my-container -p 4200:5000 --network data microtingas/greate-belt-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
@@ -596,8 +602,8 @@ jobs:
       run: sleep 15
     - name: Load DB dump
       run: |
-        mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
-        mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
+        docker exec -i mariadbtest mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
+        docker exec -i mariadbtest mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
     - name: Copy dependencies
       run: |
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
@@ -673,8 +679,8 @@ jobs:
       run: sleep 15
     - name: Load DB dump
       run: |
-        mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
-        mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
+        docker exec -i mariadbtest mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
+        docker exec -i mariadbtest mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
     - name: Build
       run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
@@ -803,6 +809,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Start the newly build Docker container
       id: docker-run
       run: docker run --name my-container -p 4200:5000 --network data microtingas/work-items-planning-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
@@ -1041,8 +1049,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
-    - name: Sleep 15
-      run: sleep 15
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Start the newly build Docker container
       id: docker-run
       run: docker run --name my-container -p 4200:5000 --network data microtingas/time-planning-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
@@ -1154,8 +1162,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password -p 5672:5672 rabbitmq:latest
-    - name: Sleep 15
-      run: sleep 15
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -1195,11 +1203,13 @@ jobs:
     - name: Start MariaDB
       run: |
         docker pull mariadb:11.7
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: 'Preparing Debian Service checkout'
       uses: actions/checkout@v3
       with:
@@ -1294,6 +1304,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: 'Preparing Debian Service checkout'
       uses: actions/checkout@v3
       with:
@@ -1381,11 +1393,13 @@ jobs:
     - name: Start MariaDB
       run: |
         docker pull mariadb:11.7
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: 'Preparing Debian Service checkout'
       uses: actions/checkout@v3
       with:
@@ -1478,6 +1492,8 @@ jobs:
       run: |
         docker pull rabbitmq:latest
         docker run -d --hostname my-rabbit --name some-rabbit --network data -p 5672:5672 -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - name: 'Preparing Debian Service checkout'
       uses: actions/checkout@v3
       with:
