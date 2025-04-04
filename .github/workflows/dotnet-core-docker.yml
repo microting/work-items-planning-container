@@ -281,7 +281,7 @@ jobs:
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
     - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
     - name: The job has failed
@@ -459,7 +459,7 @@ jobs:
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
     - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     #- name: Plugin testing
     #  run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
     - name: Stop the newly build Docker container
@@ -596,8 +596,8 @@ jobs:
       run: sleep 15
     - name: Load DB dump
       run: |
-        mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
+        mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
+        mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
     - name: Copy dependencies
       run: |
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
@@ -632,7 +632,7 @@ jobs:
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
     - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
     - name: Stop the newly build Docker container
@@ -673,8 +673,8 @@ jobs:
       run: sleep 15
     - name: Load DB dump
       run: |
-        mysql -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
-        mysql -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
+        mariadb -u root -h 127.0.0.1 --password=secretpassword -e 'create database `420_eform-angular-workflow-plugin`'
+        mariadb -u root -h 127.0.0.1 --password=secretpassword 420_eform-angular-workflow-plugin < eform-angular-workflow-plugin/420_eform-angular-workflow-plugin.sql
     - name: Build
       run: dotnet build eform-angular-workflow-plugin/eFormAPI/Plugins/Workflow.Pn/Workflow.Pn.sln
     - name: Unit Tests
@@ -875,7 +875,7 @@ jobs:
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
     - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Get standard output
       run: |
         cat docker_run_log
@@ -884,17 +884,17 @@ jobs:
     - name: Load DB dump
       if: matrix.test == 'a'
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 2'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'drop database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'drop database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'drop database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 2'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'drop database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'drop database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-backend-configuration-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'drop database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-items-planning-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/backend-configuration-pn/a/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Restart the Docker container
       if: matrix.test == 'a'
       run: docker restart my-container
@@ -1092,16 +1092,16 @@ jobs:
         working-directory: eform-angular-frontend/eform-client
         command-prefix: "--"
     - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Plugin testing
       run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
     - name: Load DB dump
       if: matrix.test == 'a'
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 1'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < eform-angular-frontend/eform-client/cypress/e2e/plugins/time-planning-pn/a/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/time-planning-pn/a/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 1'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < eform-angular-frontend/eform-client/cypress/e2e/plugins/time-planning-pn/a/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-time-planning-plugin < eform-angular-frontend/eform-client/cypress/e2e/plugins/time-planning-pn/a/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: ${{matrix.test}} test
       uses: cypress-io/github-action@v4
       with:
@@ -1218,20 +1218,20 @@ jobs:
       run: sleep 15
     - name: Load DB dump
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < main/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_Angular`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_Angular < main/420_Angular.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -1310,20 +1310,20 @@ jobs:
         path: eform-service-items-planning-plugin
     - name: Load DB dump
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < main/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_Angular`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_Angular < main/420_Angular.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -1402,20 +1402,20 @@ jobs:
         path: eform-service-workflow-plugin
     - name: Load DB dump
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < main/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < main/420_Angular.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < main/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_Angular`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_Angular < main/420_Angular.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-backend-configuration-plugin < main/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-time-planning-plugin < main/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-items-planning-plugin < main/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-case-template-plugin < main/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -1518,20 +1518,20 @@ jobs:
         python3 main/extract_packages.py
     - name: Load DB dump
       run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < eform-service-backendconfiguration-plugin/420_SDK.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_Angular`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_Angular < eform-service-backendconfiguration-plugin/420_Angular.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-backend-configuration-plugin < eform-service-backendconfiguration-plugin/420_eform-backend-configuration-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-time-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-time-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-items-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-items-planning-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_eform-angular-case-template-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-case-template-plugin.sql
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_chemical-base-plugin < eform-service-backendconfiguration-plugin/420_chemical-base-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_SDK`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_SDK < eform-service-backendconfiguration-plugin/420_SDK.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_Angular`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_Angular < eform-service-backendconfiguration-plugin/420_Angular.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-backend-configuration-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-backend-configuration-plugin < eform-service-backendconfiguration-plugin/420_eform-backend-configuration-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-time-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-time-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-time-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-items-planning-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-items-planning-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-items-planning-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_eform-angular-case-template-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_eform-angular-case-template-plugin < eform-service-backendconfiguration-plugin/420_eform-angular-case-template-plugin.sql
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < eform-service-backendconfiguration-plugin/420_chemical-base-plugin.sql
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
