@@ -52,8 +52,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Sleep 15 seconds
       run: sleep 15
     - name: Start rabbitmq
@@ -148,8 +148,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -222,8 +222,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -323,8 +323,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Sleep 15
       run: sleep 15        
     - name: Setup .NET Core
@@ -403,8 +403,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -498,8 +498,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -569,8 +569,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - uses: actions/download-artifact@v4
       with:
         name: workflow-container
@@ -663,8 +663,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Setup .NET Core
       uses: actions/setup-dotnet@v3
       with:
@@ -795,8 +795,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Sleep 15 seconds
       run: sleep 15
     - name: Start rabbitmq
@@ -960,8 +960,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Sleep 15
       run: sleep 15        
     - name: Setup .NET Core
@@ -1035,8 +1035,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -1148,8 +1148,8 @@ jobs:
       run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -1194,8 +1194,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -1288,8 +1288,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -1380,8 +1380,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
@@ -1472,8 +1472,8 @@ jobs:
       run: docker network create --driver bridge data
     - name: Start MariaDB
       run: |
-        docker pull mariadb:10.8
-        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:10.8
+        docker pull mariadb:11.7
+        docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Start rabbitmq
       run: |
         docker pull rabbitmq:latest
