@@ -131,7 +131,7 @@ jobs:
       with:
         name: error Screenshots
         path: |
-          /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/errorShots/chrome*.png
+          /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
   frontend-test-dotnet:
     needs: frontend-build
