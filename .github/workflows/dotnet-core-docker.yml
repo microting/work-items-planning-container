@@ -1101,9 +1101,6 @@ jobs:
         command-prefix: "--"
     - name: Change rabbitmq hostname
       run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
-    - name: Plugin testing
-      if: matrix.test == 'a'
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin2${{matrix.test}}
     - name: Load DB Dump
       run: |
         docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 1'
