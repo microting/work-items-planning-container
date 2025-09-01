@@ -1025,7 +1025,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test: [a,b,c]
+        test: [a,b,c,d]
     steps:
     - uses: actions/checkout@v3
     - name: 'Preparing Time Planning checkout'
