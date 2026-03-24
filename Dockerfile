@@ -68,7 +68,8 @@ RUN mkdir -p /usr/share/man/man1 && \
 		fonts-liberation \
 		fonts-dejavu-core \
 		fonts-freefont-ttf \
-		hyphen-en-us && \
+		hyphen-en-us \
+		openjdk-17-jre-headless && \
 	apt-get -y -q remove libreoffice-gnome || true && \
 	apt-get clean && \
 	apt-get -y autoremove && \
