@@ -130,7 +130,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-screenshots-frontend-${{matrix.test}}
         path: |
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
@@ -417,7 +417,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-screenshots-items-planning-${{matrix.test}}
         path: |
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/*.png
         retention-days: 2
@@ -594,7 +594,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-screenshots-greate-belt
         path: |
           eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
@@ -1050,7 +1050,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-screenshots-backend-pn-${{matrix.test}}
         path: |
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
@@ -1058,7 +1058,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-videos-backend-pn-${{matrix.test}}
         path: |
           /home/runner/work/work-items-planning-container/work-items-planning-container/eform-angular-frontend/eform-client/cypress/videos/*.mp4
         retention-days: 2
@@ -1397,7 +1397,7 @@ jobs:
       if: ${{ failure() }}
       uses: actions/upload-artifact@v4
       with:
-        name: error Screenshots
+        name: error-screenshots-timeplanning-${{matrix.test}}
         path: |
           eform-angular-frontend/eform-client/errorShots/chrome*.png
         retention-days: 2
