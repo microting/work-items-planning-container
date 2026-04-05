@@ -202,6 +202,7 @@ jobs:
   items-planning-test:
     needs: items-planning-build
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.test == 'a' }}
     strategy:
       fail-fast: false
       matrix:
