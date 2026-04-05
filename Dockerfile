@@ -77,4 +77,6 @@ RUN mkdir -p /usr/share/man/man1 && \
 
 RUN adduser --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
 
+EXPOSE 5000 5001
+
 ENTRYPOINT ["dotnet", "eFormAPI.Web.dll"]
