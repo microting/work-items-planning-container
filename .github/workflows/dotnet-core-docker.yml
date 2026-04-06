@@ -441,11 +441,6 @@ jobs:
         cat docker_run_log
         result=`cat docker_run_log | grep "Now listening on:" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
-    - name: Enable plugin
-      run: |
-        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 2'
-        docker restart my-container
-        sleep 15
     - name: Wait for app
       run: npx wait-on http://localhost:4200 --timeout 120000
     - name: Playwright test
