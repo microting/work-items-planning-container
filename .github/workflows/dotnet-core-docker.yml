@@ -419,35 +419,41 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-greate-belt-plugin/eform-client/src/app/plugins/modules/greate-belt-pn eform-angular-frontend/eform-client/src/app/plugins/modules/greate-belt-pn
-        #cp -av eform-angular-greate-belt-plugin/eform-client/wdio-headless-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.ts
-        #cp -av eform-angular-greate-belt-plugin/eform-client/wdio-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-plugin-step2.conf.ts
+        mkdir -p eform-angular-frontend/eform-client/playwright/e2e/plugins/
+        cp -av eform-angular-greate-belt-plugin/eform-client/playwright/e2e/plugins/greate-belt-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/greate-belt-pn
+        cp -av eform-angular-greate-belt-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
     - name: Build frontend
       run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
-    - name: Create errorShots directory
-      run: mkdir eform-angular-frontend/eform-client/errorShots
+    - name: Install Playwright browsers
+      run: cd eform-angular-frontend/eform-client && npx playwright install --with-deps chromium
     - name: Pretest changes to work with Docker container
-      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/e2e/Constants/DatabaseConfigurationConstants.ts
+      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/playwright/e2e/Constants/DatabaseConfigurationConstants.ts
+    - name: Get standard output
+      run: cat docker_run_log
+    - name: DB Configuration
+      run: |
+        cd eform-angular-frontend/eform-client
+        npx playwright test playwright/e2e/Tests/database-configuration/
+    - name: Change rabbitmq hostname
+      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
     - name: Get standard output
       run: |
         cat docker_run_log
-    - name: DB Configuration
-      uses: cypress-io/github-action@v4
-      with:
-        start: echo 'hi'
-        wait-on: "http://localhost:4200"
-        wait-on-timeout: 120
-        browser: chrome
-        record: false
-        spec: cypress/e2e/db/*
-        config-file: cypress.config.ts
-        working-directory: eform-angular-frontend/eform-client
-        command-prefix: "--"
-    - name: Change rabbitmq hostname
-      run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
-    #- name: Plugin testing
-    #  run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
+        result=`cat docker_run_log | grep "Now listening on:" -m 1 | wc -l`
+        if [ $result -ne 1 ];then exit 1; fi
+    - name: Enable plugin
+      run: |
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 2'
+        docker restart my-container
+        sleep 15
+    - name: Wait for app
+      run: npx wait-on http://localhost:4200 --timeout 120000
+    - name: Playwright test
+      run: |
+        cd eform-angular-frontend/eform-client
+        npx playwright test playwright/e2e/plugins/greate-belt-pn/a/
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
@@ -456,16 +462,14 @@ jobs:
         result=`cat docker_run_log | grep "Now listening on:" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
     - name: The job has failed
-      if: always()
-      run: |
-        cat docker_run_log
-    - name: Archive screenshot artifacts
       if: ${{ failure() }}
+      run: cat docker_run_log
+    - name: Archive Playwright report
+      if: failure()
       uses: actions/upload-artifact@v4
       with:
-        name: error-screenshots-greate-belt
-        path: |
-          eform-angular-frontend/eform-client/errorShots/chrome*.png
+        name: playwright-report-greate-belt
+        path: eform-angular-frontend/eform-client/playwright-report/
         retention-days: 2
   greatebelt-dotnet-test:
     runs-on: ubuntu-latest
@@ -547,20 +551,33 @@ jobs:
   workflow-test:
     needs: workflow-build
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        test: [a,b,c,d]
     steps:
     - uses: actions/checkout@v3
       with:
         path: main
     - name: Create docker network
-      run: docker network create --driver bridge data
+      run: docker network create --driver bridge --attachable data
     - name: Start MariaDB
       run: |
         docker pull mariadb:11.7
         docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
+    - name: Start rabbitmq
+      run: |
+        docker pull rabbitmq:latest
+        docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 seconds for letting the mariadb container start
+      run: sleep 30
     - uses: actions/download-artifact@v4
       with:
         name: workflow-container
     - run: docker load -i workflow-container.tar
+    - name: Start the newly build Docker container
+      id: docker-run
+      run: docker run --name my-container -p 4200:5000 --network data microtingas/workflow-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
     - name: Use Node.js
       uses: actions/setup-node@v3
       with:
@@ -587,40 +604,39 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-settings eform-angular-frontend/eform-client/e2e/Tests/workflow-settings
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-general eform-angular-frontend/eform-client/e2e/Tests/workflow-general
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Page\ objects/Workflow eform-angular-frontend/eform-client/e2e/Page\ objects/Workflow
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-headless-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.ts
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-plugin-step2.conf.ts
-        mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
+        mkdir -p eform-angular-frontend/eform-client/playwright/e2e/plugins/
+        cp -av eform-angular-workflow-plugin/eform-client/playwright/e2e/plugins/workflow-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/workflow-pn
+        cp -av eform-angular-workflow-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
         cd eform-angular-frontend/eform-client && ../../eform-angular-workflow-plugin/testinginstallpn.sh
-    - name: Start the newly build Docker container
-      id: docker-run
-      run: docker run --name my-container -p 4200:5000 --network data microtingas/workflow-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" > docker_run_log 2>&1 &
-    - name: Sleep 15 seconds
-      run: sleep 15
-    - name: Get standard output
-      run: cat docker_run_log
-    - name: Pretest changes to work with Docker container
-      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/e2e/Constants/DatabaseConfigurationConstants.ts
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
+    - name: Install Playwright browsers
+      run: cd eform-angular-frontend/eform-client && npx playwright install --with-deps chromium
+    - name: Pretest changes to work with Docker container
+      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/playwright/e2e/Constants/DatabaseConfigurationConstants.ts
     - name: DB Configuration
-      uses: cypress-io/github-action@v4
-      with:
-        start: echo 'hi'
-        wait-on: "http://localhost:4200"
-        wait-on-timeout: 120
-        browser: chrome
-        record: false
-        spec: cypress/e2e/db/*
-        config-file: cypress.config.ts
-        working-directory: eform-angular-frontend/eform-client
-        command-prefix: "--"
+      run: |
+        cd eform-angular-frontend/eform-client
+        npx playwright test playwright/e2e/Tests/database-configuration/
     - name: Change rabbitmq hostname
       run: docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
-    - name: Plugin testing
-      run: cd eform-angular-frontend/eform-client && npm run testheadlessplugin
+    - name: Get standard output
+      run: |
+        cat docker_run_log
+        result=`cat docker_run_log | grep "Now listening on:" -m 1 | wc -l`
+        if [ $result -ne 1 ];then exit 1; fi
+    - name: Enable plugin
+      if: matrix.test != 'a'
+      run: |
+        docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 2'
+        docker restart my-container
+        sleep 15
+    - name: Wait for app
+      run: npx wait-on http://localhost:4200 --timeout 120000
+    - name: ${{matrix.test}} playwright test
+      run: |
+        cd eform-angular-frontend/eform-client
+        npx playwright test playwright/e2e/plugins/workflow-pn/${{matrix.test}}/
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
@@ -630,8 +646,14 @@ jobs:
         if [ $result -ne 1 ];then exit 1; fi
     - name: The job has failed
       if: ${{ failure() }}
-      run: |
-        cat docker_run_log
+      run: cat docker_run_log
+    - name: Archive Playwright report
+      if: failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: playwright-report-workflow-${{matrix.test}}
+        path: eform-angular-frontend/eform-client/playwright-report/
+        retention-days: 2
   workflow-dotnet-test:
     runs-on: ubuntu-latest
     steps:
