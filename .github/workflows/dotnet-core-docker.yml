@@ -422,8 +422,6 @@ jobs:
         mkdir -p eform-angular-frontend/eform-client/playwright/e2e/plugins/
         cp -av eform-angular-greate-belt-plugin/eform-client/playwright/e2e/plugins/greate-belt-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/greate-belt-pn
         cp -av eform-angular-greate-belt-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
-    - name: Build frontend
-      run: dotnet build eform-angular-frontend/eFormAPI/eFormAPI.sln > dotnet_log 2>&1 &
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
     - name: Install Playwright browsers
@@ -523,11 +521,6 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-workflow-plugin/eform-client/src/app/plugins/modules/workflow-pn eform-angular-frontend/eform-client/src/app/plugins/modules/workflow-pn
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-settings eform-angular-frontend/eform-client/e2e/Tests/workflow-settings
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Tests/workflow-general eform-angular-frontend/eform-client/e2e/Tests/workflow-general
-        cp -av eform-angular-workflow-plugin/eform-client/e2e/Page\ objects/Workflow eform-angular-frontend/eform-client/e2e/Page\ objects/Workflow
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-headless-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-headless-plugin-step2.conf.ts
-        cp -av eform-angular-workflow-plugin/eform-client/wdio-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-plugin-step2.conf.ts
         mkdir -p eform-angular-frontend/eFormAPI/eFormAPI.Web/Plugins
         cd eform-angular-frontend/eform-client && ../../eform-angular-workflow-plugin/testinginstallpn.sh
     - name: Get the version release
@@ -975,11 +968,6 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
-        cp -av eform-angular-timeplanning-plugin/eform-client/e2e/Tests/time-planning-settings eform-angular-frontend/eform-client/e2e/Tests/time-planning-settings
-        cp -av eform-angular-timeplanning-plugin/eform-client/e2e/Tests/time-planning-general eform-angular-frontend/eform-client/e2e/Tests/time-planning-general
-        cp -av eform-angular-timeplanning-plugin/eform-client/e2e/Page\ objects/TimePlanning eform-angular-frontend/eform-client/e2e/Page\ objects/TimePlanning
-        cp -av eform-angular-timeplanning-plugin/eform-client/wdio-headless-plugin-step2a.conf.ts eform-angular-frontend/eform-client/wdio-headless-plugin-step2a.conf.ts
-        cp -av eform-angular-timeplanning-plugin/eform-client/wdio-plugin-step2.conf.ts eform-angular-frontend/eform-client/wdio-plugin-step2.conf.ts
         cd eform-angular-frontend/eform-client && ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
     - name: Copy Dockerfile
       run: cp eform-angular-timeplanning-plugin/Dockerfile .
