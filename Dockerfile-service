@@ -50,4 +50,7 @@ RUN mkdir -p /usr/share/man/man1 && \
 
 RUN adduser --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
 
+RUN chown -R libreoffice /app /opt/libreoffice
+USER libreoffice
+
 ENTRYPOINT ["dotnet", "MicrotingService.dll"]
