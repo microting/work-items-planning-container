@@ -75,10 +75,10 @@ RUN mkdir -p /usr/share/man/man1 && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN adduser --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
+RUN adduser --uid 1000 --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
 
-RUN chown -R libreoffice /app /opt/libreoffice
-USER libreoffice
+RUN chown -R 1000:1000 /app /opt/libreoffice
+USER 1000
 
 EXPOSE 5000 5001
 
