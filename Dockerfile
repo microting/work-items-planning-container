@@ -3,7 +3,7 @@ FROM node:22-bookworm-slim as node-env
 WORKDIR /app
 ARG SENTRY_AUTH_TOKEN
 ARG DISABLE_SENTRY
-ENV PATH /app/node_modules/.bin:$PATH
+ENV PATH=/app/node_modules/.bin:$PATH
 COPY eform-angular-frontend/eform-client ./
 RUN apt-get update
 RUN apt-get -y -q install ca-certificates
@@ -54,7 +54,7 @@ COPY --from=build-env /app/GreateBelt.Pn/out ./Plugins/GreateBelt.Pn
 COPY --from=node-env /app/dist/browser wwwroot
 RUN rm connection.json; exit 0
 
-ENV DEBIAN_FRONTEND noninteractive
+ENV DEBIAN_FRONTEND=noninteractive
 ENV Logging__Console__FormatterName=
 
 RUN mkdir -p /usr/share/man/man1 && \
@@ -75,10 +75,9 @@ RUN mkdir -p /usr/share/man/man1 && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN adduser --uid 1000 --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
-
-RUN chown -R 1000:1000 /app /opt/libreoffice
-USER 1000
+RUN mkdir -p /opt/libreoffice && chown -R $APP_UID:$APP_UID /app /opt/libreoffice
+ENV HOME=/opt/libreoffice
+USER $APP_UID
 
 EXPOSE 5000 5001
 
