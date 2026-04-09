@@ -48,11 +48,8 @@ RUN mkdir -p /usr/share/man/man1 && \
 	apt-get -y autoremove && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN getent passwd 1000 && userdel -f $(getent passwd 1000 | cut -d: -f1) || true; \
-    getent group 1000 && groupdel $(getent group 1000 | cut -d: -f1) || true; \
-    adduser --uid 1000 --home=/opt/libreoffice --disabled-password --gecos "" --shell=/bin/bash libreoffice
-
-RUN chown -R 1000:1000 /app /opt/libreoffice
-USER 1000
+RUN mkdir -p /opt/libreoffice && chown -R $APP_UID:$APP_UID /app /opt/libreoffice
+ENV HOME=/opt/libreoffice
+USER $APP_UID
 
 ENTRYPOINT ["dotnet", "MicrotingService.dll"]
