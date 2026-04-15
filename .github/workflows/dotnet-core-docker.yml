@@ -1128,6 +1128,26 @@ jobs:
         npm run test:unit -- --testPathPatterns=time-planning-pn --coverage --collectCoverageFrom='src/app/plugins/modules/time-planning-pn/**/*.ts' --coveragePathIgnorePatterns='\.spec\.ts$'
   timeplanning-pn-dotnet-test:
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - name: a
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.AbsenceRequestServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.BreakPolicyControllerTests|FullyQualifiedName=TimePlanning.Pn.Test.BreakPolicyServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.CanaryInAColeMine"
+          - name: b
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.PictureSnapshotServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.ContentHandoverServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.DanLonFileExporterTests|FullyQualifiedName=TimePlanning.Pn.Test.DataLonFileExporterTests"
+          - name: c
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.PlanningServiceMultiShiftTests|FullyQualifiedName=TimePlanning.Pn.Test.DeviceTokenServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GpsCoordinateServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.PayDayTypeRuleServiceTests"
+          - name: d
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.PlanRegistrationVersionHistoryTests|FullyQualifiedName=TimePlanning.Pn.Test.PayRuleSetControllerTests|FullyQualifiedName=TimePlanning.Pn.Test.PayRuleSetServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.PayTierRuleServiceTests"
+          - name: e
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.PushNotificationIntegrationTests|FullyQualifiedName=TimePlanning.Pn.Test.PayTimeBandRuleServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.PlanRegistrationHelperComputationTests|FullyQualifiedName=TimePlanning.Pn.Test.PlanRegistrationHelperHolidayTests"
+          - name: f
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.SettingsServiceExtendedTests|FullyQualifiedName=TimePlanning.Pn.Test.PlanRegistrationHelperReadBySiteAndDateTests|FullyQualifiedName=TimePlanning.Pn.Test.PlanRegistrationHelperTests|FullyQualifiedName=TimePlanning.Pn.Test.PushNotificationServiceTests"
+          - name: g
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.SettingsServicePhoneNumberTests|FullyQualifiedName=TimePlanning.Pn.Test.TimePlanningWorkingHoursExportTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningAbsenceRequestGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningAuthGrpcServiceTests"
+          - name: h
+            filter: "FullyQualifiedName=TimePlanning.Pn.Test.SettingsServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningContentHandoverGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningPlanningsGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningSettingsGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningWorkingHoursGrpcServiceTests"
     steps:
     - uses: actions/checkout@v3
     - name: 'Preparing Time Planning checkout'
@@ -1155,8 +1175,21 @@ jobs:
         dotnet-version: 10.0.x
     - name: Build
       run: dotnet build eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
-    - name: Unit Tests
-      run: dotnet test --no-restore -c Release -v n eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.Test/TimePlanning.Pn.Test.csproj
+    - name: Unit Tests (shard ${{ matrix.shard.name }})
+      run: dotnet test --no-restore -c Release -v n --filter "${{ matrix.shard.filter }}" eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.Test/TimePlanning.Pn.Test.csproj
+  timeplanning-pn-dotnet-test-gate:
+    needs: timeplanning-pn-dotnet-test
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verify all shards passed
+      env:
+        SHARD_RESULT: ${{ needs.timeplanning-pn-dotnet-test.result }}
+      run: |
+        if [ "$SHARD_RESULT" != "success" ]; then
+          echo "timeplanning-pn-dotnet-test matrix result: $SHARD_RESULT"
+          exit 1
+        fi
   service-build:
     runs-on: ubuntu-latest
     steps:
@@ -1600,7 +1633,7 @@ jobs:
         name: work-items-planning-service-container
         path: work-items-planning-service-container.tar
   deploy:
-    needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test-gate, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -1632,7 +1665,7 @@ jobs:
     - name: Image digest
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
-    needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test-gate, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
