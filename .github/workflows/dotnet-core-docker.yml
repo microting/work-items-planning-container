@@ -211,6 +211,13 @@ jobs:
     - uses: actions/checkout@v3
       with:
         path: main
+    - name: 'Preparing items planning checkout'
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        repository: microting/eform-angular-items-planning-plugin
+        ref: stable
+        path: eform-angular-items-planning-plugin
     - uses: actions/download-artifact@v4
       with:
         name: items-planning-container
@@ -245,14 +252,14 @@ jobs:
         path: eform-angular-frontend
     - name: Copy dependencies
       run: |
-        cp -av main/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
+        cp -av eform-angular-items-planning-plugin/eform-client/src/app/plugins/modules/items-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/items-planning-pn
         mkdir -p eform-angular-frontend/eform-client/playwright/e2e/plugins/
-        cp -av main/eform-client/playwright/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/items-planning-pn
-        cp -av main/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
+        cp -av eform-angular-items-planning-plugin/eform-client/playwright/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/items-planning-pn
+        cp -av eform-angular-items-planning-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
         mkdir -p eform-angular-frontend/eform-client/cypress/e2e/plugins/
-        cp -av main/eform-client/cypress/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/cypress/e2e/plugins/items-planning-pn
-        cp -av main/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/
-        cd eform-angular-frontend/eform-client && ../../main/testinginstallpn.sh
+        cp -av eform-angular-items-planning-plugin/eform-client/cypress/e2e/plugins/items-planning-pn eform-angular-frontend/eform-client/cypress/e2e/plugins/items-planning-pn
+        cp -av eform-angular-items-planning-plugin/eform-client/e2e/Assets eform-angular-frontend/eform-client/e2e/
+        cd eform-angular-frontend/eform-client && ../../eform-angular-items-planning-plugin/testinginstallpn.sh
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
     - name: Install Playwright browsers
