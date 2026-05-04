@@ -270,13 +270,9 @@ jobs:
       run: |
         cd eform-angular-frontend/eform-client
         npx playwright test playwright/e2e/Tests/database-configuration/
-    - name: Load DB dump
+    - name: Disable plugin for settings test
       if: matrix.test == 'a'
-      run: |
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 1'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'drop database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'create database `420_SDK`'
-        docker exec -i mariadbtest mysql -u root --password=secretpassword 420_SDK < eform-angular-frontend/eform-client/cypress/e2e/plugins/items-planning-pn/a/420_sdk.sql
+      run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_Angular.EformPlugins set Status = 1'
     - name: Change rabbitmq hostname
       if: ${{ matrix.test != 'a' }}
       run: docker exec -i mariadbtest mysql -u root --password=secretpassword -e 'update 420_SDK.Settings set Value = "my-rabbit" where Name = "rabbitMqHost"'
