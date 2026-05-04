@@ -265,7 +265,7 @@ jobs:
     - name: Install Playwright browsers
       run: cd eform-angular-frontend/eform-client && npx playwright install --with-deps chromium
     - name: Pretest changes to work with Docker container
-      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/e2e/Constants/DatabaseConfigurationConstants.ts
+      run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/playwright/e2e/Constants/DatabaseConfigurationConstants.ts
     - name: DB Configuration
       run: |
         cd eform-angular-frontend/eform-client
