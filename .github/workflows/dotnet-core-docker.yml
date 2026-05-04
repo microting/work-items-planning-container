@@ -267,17 +267,9 @@ jobs:
     - name: Pretest changes to work with Docker container
       run: sed -i 's/localhost/mariadbtest/g' eform-angular-frontend/eform-client/e2e/Constants/DatabaseConfigurationConstants.ts
     - name: DB Configuration
-      uses: cypress-io/github-action@v4
-      with:
-        start: echo 'hi'
-        wait-on: "http://localhost:4200"
-        wait-on-timeout: 120
-        browser: chrome
-        record: false
-        spec: cypress/e2e/db/*
-        config-file: cypress.config.ts
-        working-directory: eform-angular-frontend/eform-client
-        command-prefix: "--"
+      run: |
+        cd eform-angular-frontend/eform-client
+        npx playwright test playwright/e2e/Tests/database-configuration/
     - name: Load DB dump
       if: matrix.test == 'a'
       run: |
