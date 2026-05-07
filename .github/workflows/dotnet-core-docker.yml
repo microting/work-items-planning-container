@@ -1323,7 +1323,7 @@ jobs:
     - name: Get standard output
       run: |
         cat docker_run_log
-        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
+        result=`cat docker_run_log | grep "Service Start completed" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   items-planning-service-build:
     runs-on: ubuntu-latest
@@ -1417,7 +1417,7 @@ jobs:
     - name: Get standard output
       run: |
         cat docker_run_log
-        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
+        result=`cat docker_run_log | grep "Service Start completed" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   workflow-service-build:
     runs-on: ubuntu-latest
@@ -1511,7 +1511,7 @@ jobs:
     - name: Get standard output
       run: |
         cat docker_run_log
-        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
+        result=`cat docker_run_log | grep "Service Start completed" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
   backend-configuration-service-build:
     runs-on: ubuntu-latest
@@ -1644,7 +1644,7 @@ jobs:
     - name: Get standard output
       run: |
         cat docker_run_log
-        result=`cat docker_run_log | grep "No messages for us right now!" -m 1 | wc -l`
+        result=`cat docker_run_log | grep "Service Start completed" -m 1 | wc -l`
         if [ $result -ne 1 ];then exit 1; fi
     - run: docker save microtingas/work-items-planning-service-container:latest -o work-items-planning-service-container.tar
     - uses: actions/upload-artifact@v4
