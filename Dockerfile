@@ -62,7 +62,6 @@ RUN mkdir -p /usr/share/man/man1 && \
 	apt-get install -y -q --no-install-recommends \
 		libxml2 \
 		libgdiplus \
-		libc6-dev \
 		libreoffice-writer \
 		libreoffice-core \
 		fonts-liberation \
