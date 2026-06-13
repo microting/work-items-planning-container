@@ -829,12 +829,74 @@ jobs:
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: main/pentest/reports/latest/report.sarif
+        category: pentest-image
     - name: Upload pentest report
       if: always()
       uses: actions/upload-artifact@v4
       with:
         name: pentest-report
         path: main/pentest/reports/latest/
+  pentest-dast:
+    # Live DAST/authz: stands up a disposable, freshly-initialized instance (mirrors
+    # backend-pn-playwright-test's infra) using the image from backend-pn-build, initializes
+    # it via the setup API, then runs ZAP + nuclei + authz against the running app.
+    # ASPNETCORE_ENVIRONMENT=Development enables Swagger so ZAP imports the OpenAPI spec for
+    # full API coverage. Advisory by default (not in deploy's needs).
+    needs: backend-pn-build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+    - uses: actions/download-artifact@v4
+      with:
+        name: work-items-planning-container
+    - run: docker load -i work-items-planning-container.tar
+    - name: Create docker network
+      run: docker network create --driver bridge --attachable data
+    - name: Start MariaDB
+      run: docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -d mariadb:11.7
+    - name: Start rabbitmq
+      run: docker run -d --hostname my-rabbit --name some-rabbit --network data -e RABBITMQ_DEFAULT_USER=admin -e RABBITMQ_DEFAULT_PASS=password rabbitmq:latest
+    - name: Sleep 30 for DB
+      run: sleep 30
+    - name: Start the app container
+      run: docker run --name my-container --network data -d -e ALLOW_FAKE_TRANSLATE=true -e ASPNETCORE_ENVIRONMENT=Development microtingas/work-items-planning-container:latest "/ConnectionString=host=mariadbtest;Database=420_Angular;user=root;password=secretpassword;port=3306;Convert Zero Datetime = true;SslMode=none;" "/api-key=FAKE_TRANSLATE_E2E"
+    - name: Build pentest tools image
+      run: docker build -t eform-pentest-tools:latest -f main/pentest/Dockerfile.tools main/pentest
+    - name: Initialize eForm (schema + admin) via setup API
+      run: |
+        docker run --rm --network data --entrypoint bash \
+          -v "$GITHUB_WORKSPACE/main/pentest:/p" -w /p \
+          eform-pentest-tools:latest ci/init-eform.sh http://my-container:5000 mariadbtest
+    - name: Run live DAST + authz
+      env:
+        PENTEST_AUTHORIZED: "yes"
+      run: |
+        docker run --rm --network data --entrypoint bash \
+          -e PENTEST_AUTHORIZED \
+          -e ADMIN_EMAIL=admin@admin.com -e ADMIN_PASSWORD=secretpassword \
+          -e NORMAL_EMAIL=normal@pentest.local -e 'NORMAL_PASSWORD=Pentest1234$' \
+          -e READONLY_EMAIL=readonly@pentest.local -e 'READONLY_PASSWORD=Pentest1234$' \
+          -v "$GITHUB_WORKSPACE/main:/src/work-items-planning-container" \
+          -w /src/work-items-planning-container/pentest \
+          eform-pentest-tools:latest \
+          run.sh --mode local --profile ci-dast --dast-only
+    - name: Upload DAST SARIF to Security tab
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: main/pentest/reports/latest/report.sarif
+        category: pentest-dast
+    - name: Upload DAST report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pentest-dast-report
+        path: main/pentest/reports/latest/
+    - name: App log on failure
+      if: failure()
+      run: docker logs my-container 2>&1 | tail -80
   backend-pn-playwright-test:
     needs: backend-pn-build
     runs-on: ubuntu-latest
