@@ -790,7 +790,51 @@ jobs:
     - uses: actions/upload-artifact@v4
       with:
         name: work-items-planning-container
-        path: work-items-planning-container.tar        
+        path: work-items-planning-container.tar
+  pentest:
+    # Reuses the image built by backend-pn-build (no rebuild): loads the saved tar and
+    # runs the pentest harness against the real artifact — image CVE scan + source SCA,
+    # secrets (gitleaks, full history) and Dockerfile/Helm config. Advisory by default
+    # (not in deploy's needs); add 'pentest' to deploy.needs to make it block releases.
+    needs: backend-pn-build
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        path: main
+        fetch-depth: 0
+    - uses: actions/download-artifact@v4
+      with:
+        name: work-items-planning-container
+    - run: docker load -i work-items-planning-container.tar
+    - name: Build pentest tools image
+      run: docker build -t eform-pentest-tools:latest -f main/pentest/Dockerfile.tools main/pentest
+    - name: Run pentest (real image CVE scan + source SCA/secrets/config)
+      env:
+        PENTEST_AUTHORIZED: "yes"
+        FAIL_ON_SECRETS: "true"
+        FAIL_ON_CRITICAL_FIXED_CVE: "true"
+      run: |
+        docker run --rm \
+          -e PENTEST_AUTHORIZED -e FAIL_ON_SECRETS -e FAIL_ON_CRITICAL_FIXED_CVE \
+          -e PENTEST_SCAN_REPOS=work-items-planning-container \
+          -e PENTEST_IMAGE=microtingas/work-items-planning-container:latest \
+          -v "$GITHUB_WORKSPACE/main:/src/work-items-planning-container" \
+          -v /var/run/docker.sock:/var/run/docker.sock \
+          -w /src/work-items-planning-container/pentest \
+          eform-pentest-tools:latest \
+          bash run.sh --mode ci --profile local-built-image --no-target
+    - name: Upload pentest SARIF to Security tab
+      if: always()
+      uses: github/codeql-action/upload-sarif@v3
+      with:
+        sarif_file: main/pentest/reports/latest/report.sarif
+    - name: Upload pentest report
+      if: always()
+      uses: actions/upload-artifact@v4
+      with:
+        name: pentest-report
+        path: main/pentest/reports/latest/
   backend-pn-playwright-test:
     needs: backend-pn-build
     runs-on: ubuntu-latest
