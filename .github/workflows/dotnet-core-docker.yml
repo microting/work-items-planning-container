@@ -815,7 +815,7 @@ jobs:
         FAIL_ON_SECRETS: "true"
         FAIL_ON_CRITICAL_FIXED_CVE: "true"
       run: |
-        docker run --rm \
+        docker run --rm --entrypoint bash \
           -e PENTEST_AUTHORIZED -e FAIL_ON_SECRETS -e FAIL_ON_CRITICAL_FIXED_CVE \
           -e PENTEST_SCAN_REPOS=work-items-planning-container \
           -e PENTEST_IMAGE=microtingas/work-items-planning-container:latest \
@@ -823,7 +823,7 @@ jobs:
           -v /var/run/docker.sock:/var/run/docker.sock \
           -w /src/work-items-planning-container/pentest \
           eform-pentest-tools:latest \
-          bash run.sh --mode ci --profile local-built-image --no-target
+          run.sh --mode ci --profile local-built-image --no-target
     - name: Upload pentest SARIF to Security tab
       if: always()
       uses: github/codeql-action/upload-sarif@v3
