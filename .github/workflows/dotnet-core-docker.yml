@@ -798,6 +798,9 @@ jobs:
     # (not in deploy's needs); add 'pentest' to deploy.needs to make it block releases.
     needs: backend-pn-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # SARIF upload to the Security tab when code scanning is enabled
     steps:
     - uses: actions/checkout@v3
       with:
@@ -826,6 +829,7 @@ jobs:
           run.sh --mode ci --profile local-built-image --no-target
     - name: Upload pentest SARIF to Security tab
       if: always()
+      continue-on-error: true   # Security-tab upload is best-effort (needs code scanning); never fail the job on it
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: main/pentest/reports/latest/report.sarif
@@ -844,6 +848,9 @@ jobs:
     # full API coverage. Advisory by default (not in deploy's needs).
     needs: backend-pn-build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      security-events: write   # SARIF upload to the Security tab when code scanning is enabled
     steps:
     - uses: actions/checkout@v3
       with:
@@ -884,6 +891,7 @@ jobs:
           run.sh --mode local --profile ci-dast --dast-only
     - name: Upload DAST SARIF to Security tab
       if: always()
+      continue-on-error: true   # Security-tab upload is best-effort (needs code scanning); never fail the job on it
       uses: github/codeql-action/upload-sarif@v3
       with:
         sarif_file: main/pentest/reports/latest/report.sarif
