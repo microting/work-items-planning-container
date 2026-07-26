@@ -1115,7 +1115,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        test: [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q]
+        test: [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,b1m,c1m,d1m,e1m,f1m,h1m,i1m,j1m,l1m]
     steps:
     - uses: actions/checkout@v3
       with:
@@ -1161,6 +1161,9 @@ jobs:
         cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
         mkdir -p eform-angular-frontend/eform-client/playwright/e2e/plugins/
         cp -av eform-angular-timeplanning-plugin/eform-client/playwright/e2e/plugins/time-planning-pn eform-angular-frontend/eform-client/playwright/e2e/plugins/time-planning-pn
+        if [ -d "eform-angular-timeplanning-plugin/eform-client/playwright/helpers" ]; then
+          cp -av eform-angular-timeplanning-plugin/eform-client/playwright/helpers eform-angular-frontend/eform-client/playwright/helpers
+        fi
         cp -av eform-angular-timeplanning-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
         cd eform-angular-frontend/eform-client && ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
     - name: yarn install
