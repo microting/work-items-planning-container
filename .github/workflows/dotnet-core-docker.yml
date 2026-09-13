@@ -1284,6 +1284,12 @@ jobs:
     - name: Copy dependencies
       run: |
         cp -av eform-angular-timeplanning-plugin/eform-client/src/app/plugins/modules/time-planning-pn eform-angular-frontend/eform-client/src/app/plugins/modules/time-planning-pn
+        # help/playwright-tour-seed.spec.ts asserts the tour seed file and the
+        # plugin's playwright.config.ts (storageState) are in the host.
+        if [ -d "eform-angular-timeplanning-plugin/eform-client/playwright/helpers" ]; then
+          cp -av eform-angular-timeplanning-plugin/eform-client/playwright/helpers eform-angular-frontend/eform-client/playwright/helpers
+        fi
+        cp -av eform-angular-timeplanning-plugin/eform-client/playwright.config.ts eform-angular-frontend/eform-client/playwright.config.ts
         cd eform-angular-frontend/eform-client && ../../eform-angular-timeplanning-plugin/testinginstallpn.sh
     - name: yarn install
       run: cd eform-angular-frontend/eform-client && yarn install
