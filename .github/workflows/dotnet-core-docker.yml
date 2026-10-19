@@ -4,6 +4,13 @@ on:
   push:
     tags:
       - 'v*.*.*'
+  pull_request:
+    branches: [ master ]
+
+# A new push to a PR cancels that PR's older run; tag (release) runs are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 jobs:
   frontend-build:
@@ -20,7 +27,7 @@ jobs:
           path: eform-angular-frontend
       - name: Build Docker image
         id: build
-        run: cd eform-angular-frontend && docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
+        run: cd eform-angular-frontend && docker build . -t microtingas/frontend-container:latest --build-arg GITVERSION=1.0.0 --build-arg SENTRY_AUTH_TOKEN=${{ github.event_name == 'push' && secrets.SENTRY_AUTH_TOKEN || '' }}
         shell: bash
       - run: docker save microtingas/frontend-container:latest -o container.tar
       - uses: actions/upload-artifact@v4
@@ -547,13 +554,13 @@ jobs:
         cd eform-angular-frontend/eform-client && ../../eform-angular-workflow-plugin/testinginstallpn.sh
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the version
       id: get_version
-      run: echo ::set-output name=VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the work order version
       id: get_frontend_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy Dockerfile
       run: cp eform-angular-workflow-plugin/Dockerfile .
     - name: Build the tagged Docker image
@@ -770,29 +777,29 @@ jobs:
         python3 main/extract_packages.py
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the version
       id: get_version
-      run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd eform-angular-items-planning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the work flow version
       id: get_plugin3_version
-      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-angular-workflow-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the backend configuration version
       id: get_plugin4_version
-      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-backendconfiguration-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the time planning version
       id: get_plugin5_version
-      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-angular-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-angular-timeplanning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the greate belt version
       id: get_plugin6_version
-      run: echo ::set-output name=PLUGIN6VERSION::$(cd eform-angular-greate-belt-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN6VERSION::$(cd eform-angular-greate-belt-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the frontend version
       id: get_frontend_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-angular-frontend && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy frontendfiles
       run: cp main/Dockerfile .
     - name: Build the tagged Docker image
-      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }} --build-arg PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }} --build-arg SENTRY_AUTH_TOKEN=${{secrets.SENTRY_AUTH_TOKEN}}
+      run: docker build . -t microtingas/work-items-planning-container:latest -t microtingas/work-items-planning-container:${{ steps.get_release_version.outputs.VERSION }} --build-arg GITVERSION=${{ steps.get_frontend_version.outputs.FRONTENDVERSION }} --build-arg PLUGINVERSION=${{ steps.get_version.outputs.VERSION }} --build-arg PLUGIN2VERSION=${{ steps.get_plugin_version.outputs.PLUGIN2VERSION }} --build-arg PLUGIN3VERSION=${{ steps.get_plugin3_version.outputs.PLUGIN3VERSION }} --build-arg PLUGIN4VERSION=${{ steps.get_plugin4_version.outputs.PLUGIN4VERSION }} --build-arg PLUGIN5VERSION=${{ steps.get_plugin5_version.outputs.PLUGIN5VERSION }} --build-arg PLUGIN6VERSION=${{ steps.get_plugin6_version.outputs.PLUGIN6VERSION }} --build-arg SENTRY_AUTH_TOKEN=${{ github.event_name == 'push' && secrets.SENTRY_AUTH_TOKEN || '' }}
     - name: Tag builds
       run: |-
         docker tag microtingas/work-items-planning-container:latest microtingas/work-items-planning-container:latest
@@ -1460,16 +1467,17 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eform-service-timeplanning-plugin/ServiceTimePlanningPlugin.Integration.Test/ServiceTimePlanningPlugin.Integration.Test.csproj
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the TimePlanning version
       id: get_plugin4_version
-      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the service version
       id: get_service_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy Docker file
       run: cp main/Dockerfile-time-planning-service Dockerfile
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -1554,16 +1562,17 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eform-service-items-planning-plugin/ServiceItemsPlanningPlugin.Integration.Test/ServiceItemsPlanningPlugin.Integration.Test.csproj
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the version
       id: get_version
-      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the service version
       id: get_service_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy Docker file
       run: cp main/Dockerfile-items-planning-service Dockerfile
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -1648,16 +1657,17 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eform-service-workflow-plugin/ServiceWorkflowPlugin.Integration.Test/ServiceWorkflowPlugin.Integration.Test.csproj
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the workflow version
       id: get_plugin3_version
-      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the service version
       id: get_service_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy Docker file
       run: cp main/Dockerfile-workflow-service Dockerfile
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -1766,25 +1776,26 @@ jobs:
       run: dotnet test --no-restore -c Release -v n eform-service-backendconfiguration-plugin/ServiceBackendConfigurationPlugin.Integration.Test/ServiceBackendConfigurationPlugin.Integration.Test.csproj
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the version
       id: get_version
-      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd eform-service-items-planning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the workflow version
       id: get_plugin3_version
-      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN3VERSION::$(cd eform-service-workflow-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the TimePlanning version
       id: get_plugin4_version
-      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN4VERSION::$(cd eform-service-timeplanning-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the Backend Configuration version
       id: get_plugin5_version
-      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backendconfiguration-plugin && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=PLUGIN5VERSION::$(cd eform-service-backendconfiguration-plugin && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Get the service version
       id: get_service_version
-      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=FRONTENDVERSION::$(cd eform-debian-service && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Copy Docker file
       run: cp main/Dockerfile-service Dockerfile
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -1822,6 +1833,7 @@ jobs:
         path: work-items-planning-service-container.tar
   deploy:
     needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-playwright-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test-gate, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -1836,8 +1848,9 @@ jobs:
     - run: docker load -i work-items-planning-container.tar
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
@@ -1854,6 +1867,7 @@ jobs:
       run: echo ${{ steps.docker_build.outputs.digest }}
   deploy-service:
     needs: [frontend-playwright-test, frontend-test-dotnet, test-frontend-unit, items-planning-playwright-test, items-planning-test-dotnet, workflow-test, workflow-dotnet-test, timeplanning-pn-playwright-test, timeplanning-pn-dotnet-test-gate, timeplanning-pn-dotnet-unit-test, backend-pn-playwright-test, backend-pn-test-dotnet, greate-belt-pn-test, greatebelt-dotnet-test, service-build, items-planning-service-build, workflow-service-build, timeplanning-service-build, backend-configuration-service-build]
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -1865,8 +1879,9 @@ jobs:
     - run: docker load -i work-items-planning-service-container.tar
     - name: Get the version release
       id: get_release_version
-      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags | cut -d "v" -f 2)
+      run: echo ::set-output name=VERSION::$(cd main && git describe --abbrev=0 --tags 2>/dev/null | cut -d "v" -f 2 | grep . || echo 0.0.0)
     - name: Login to DockerHub
+      if: github.event_name == 'push'
       uses: docker/login-action@v2
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
