@@ -36,7 +36,7 @@ jobs:
           path: container.tar
   frontend-playwright-test:
     needs: frontend-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     strategy:
       fail-fast: false
       matrix:
@@ -399,7 +399,7 @@ jobs:
         path: greate-belt-container.tar
   greate-belt-pn-test:
     needs: greate-belt-pn-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     steps:
     - uses: actions/checkout@v3
       with:
@@ -572,7 +572,7 @@ jobs:
         path: workflow-container.tar
   workflow-test:
     needs: workflow-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     strategy:
       fail-fast: false
       matrix:
@@ -924,7 +924,7 @@ jobs:
       run: docker logs my-container 2>&1 | tail -80
   backend-pn-playwright-test:
     needs: backend-pn-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     strategy:
       fail-fast: false
       matrix:
@@ -1130,7 +1130,7 @@ jobs:
         path: time-planning-container.tar
   timeplanning-pn-playwright-test:
     needs: timeplanning-pn-build
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     strategy:
       fail-fast: false
       matrix:
