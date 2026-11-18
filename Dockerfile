@@ -12,7 +12,7 @@ RUN yarn install
 RUN yarn build
 RUN if [ -n "$SENTRY_AUTH_TOKEN" ] && [ "$DISABLE_SENTRY" != "true" ]; then yarn sentrysourcemap; else echo "Sentry sourcemap upload skipped (DISABLE_SENTRY=$DISABLE_SENTRY)"; fi
 
-FROM mcr.microsoft.com/dotnet/sdk:10.0-noble AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:11.0-resolute AS build-env
 WORKDIR /app
 ARG GITVERSION
 ARG PLUGINVERSION
@@ -37,7 +37,7 @@ RUN dotnet publish BackendConfiguration.Pn -o BackendConfiguration.Pn/out /p:Ver
 RUN dotnet publish GreateBelt.Pn -o GreateBelt.Pn/out /p:Version=$PLUGIN6VERSION --runtime linux-x64 --configuration Release
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/aspnet:10.0-noble
+FROM mcr.microsoft.com/dotnet/aspnet:11.0-resolute
 WORKDIR /app
 ARG DISABLE_SENTRY
 ENV DISABLE_SENTRY=${DISABLE_SENTRY}
@@ -61,7 +61,7 @@ ENV Logging__Console__FormatterName=
 RUN mkdir -p /usr/share/man/man1 && \
 	apt-get update && \
 	apt-get install -y -q --no-install-recommends \
-		libxml2 \
+		libxml2-16 \
 		libgdiplus \
 		libreoffice-writer \
 		libreoffice-core \
