@@ -16,11 +16,11 @@ jobs:
   frontend-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: main
       - name: 'Preparing Frontend checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: microting/eform-angular-frontend
           ref: stable
@@ -42,11 +42,11 @@ jobs:
       matrix:
         test: [a,b,c,d,e,f,g,h,i,j]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -117,11 +117,11 @@ jobs:
   test-frontend-unit:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -140,11 +140,11 @@ jobs:
     needs: frontend-build
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -162,9 +162,9 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-angular-frontend/eFormAPI/eFormAPI.sln
     - name: Build
@@ -176,18 +176,18 @@ jobs:
   items-planning-build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           path: main
       - name: 'Preparing items planning checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
           repository: microting/eform-angular-items-planning-plugin
           ref: stable
           path: eform-angular-items-planning-plugin
       - name: 'Preparing Frontend checkout'
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: microting/eform-angular-frontend
           ref: stable
@@ -219,11 +219,11 @@ jobs:
       matrix:
         test: [a,b,c]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
@@ -256,7 +256,7 @@ jobs:
       id: extract_branch
       run: echo "BRANCH=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_OUTPUT
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -325,11 +325,11 @@ jobs:
   items-planning-test-dotnet:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
@@ -344,9 +344,9 @@ jobs:
     - name: Sleep 15
       run: sleep 15        
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Build
       run: dotnet build eform-angular-items-planning-plugin/eFormAPI/Plugins/ItemsPlanning.Pn/ItemsPlanning.Pn.sln
     - name: Unit Tests
@@ -354,25 +354,25 @@ jobs:
   greate-belt-pn-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing greate belt checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-greate-belt-plugin
         ref: stable
         path: eform-angular-greate-belt-plugin
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
     - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
@@ -401,11 +401,11 @@ jobs:
     needs: greate-belt-pn-build
     runs-on: ubuntu-24.04 # Playwright cannot install chromium on ubuntu-latest (26.04) yet, see microting/eform-angular-frontend#8222
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing greate belt checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-greate-belt-plugin
@@ -437,13 +437,13 @@ jobs:
       with:
         node-version: 22
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
     - name: 'Preparing ItemsPlanning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-items-planning-plugin
         ref: stable
@@ -501,11 +501,11 @@ jobs:
   greatebelt-dotnet-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing greate belt checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-greate-belt-plugin
@@ -518,9 +518,9 @@ jobs:
         docker pull mariadb:11.7
         docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Sleep 15 seconds
       run: sleep 15
     - name: Build
@@ -530,18 +530,18 @@ jobs:
   workflow-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
     - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-workflow-plugin
@@ -578,7 +578,7 @@ jobs:
       matrix:
         test: [a,b,c,d]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Create docker network
@@ -605,14 +605,14 @@ jobs:
       with:
         node-version: 22
     - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-workflow-plugin
         ref: stable
         path: eform-angular-workflow-plugin
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -681,11 +681,11 @@ jobs:
   workflow-dotnet-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-workflow-plugin
@@ -698,9 +698,9 @@ jobs:
         docker pull mariadb:11.7
         docker run --name mariadbtest --network data -e MYSQL_ROOT_PASSWORD=secretpassword -p 3306:3306 -d mariadb:11.7
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Sleep 15 seconds
       run: sleep 15
     - name: Load DB dump
@@ -714,46 +714,46 @@ jobs:
   backend-pn-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
     - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-items-planning-plugin
         ref: stable
         path: eform-angular-items-planning-plugin
     - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-workflow-plugin
         ref: stable
         path: eform-angular-workflow-plugin
     - name: 'Preparing backend configuration checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-backendconfiguration-plugin
         ref: stable
         path: eform-backendconfiguration-plugin
     - name: 'Preparing time planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-timeplanning-plugin
         ref: stable
         path: eform-angular-timeplanning-plugin
     - name: 'Preparing greate belt checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-greate-belt-plugin
@@ -819,7 +819,7 @@ jobs:
       contents: read
       security-events: write   # SARIF upload to the Security tab when code scanning is enabled
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
         fetch-depth: 0
@@ -869,7 +869,7 @@ jobs:
       contents: read
       security-events: write   # SARIF upload to the Security tab when code scanning is enabled
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - uses: actions/download-artifact@v4
@@ -930,7 +930,7 @@ jobs:
       matrix:
         test: [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - uses: actions/download-artifact@v4
@@ -959,26 +959,26 @@ jobs:
       with:
         node-version: 22
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
         path: eform-angular-frontend
     - name: 'Preparing backend configuration checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-backendconfiguration-plugin
         ref: stable
         path: eform-backendconfiguration-plugin
     - name: 'Preparing ItemsPlanning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-items-planning-plugin
         ref: stable
         path: eform-angular-items-planning-plugin
     - name: 'Preparing TimePlanning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-timeplanning-plugin
         ref: stable
@@ -1068,11 +1068,11 @@ jobs:
   backend-pn-test-dotnet:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing bacend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-backendconfiguration-plugin
@@ -1087,9 +1087,9 @@ jobs:
     - name: Sleep 15
       run: sleep 15
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Build
       run: dotnet build eform-backendconfiguration-plugin/eFormAPI/Plugins/BackendConfiguration.Pn/BackendConfiguration.Pn.sln
     - name: Unit Tests
@@ -1097,16 +1097,16 @@ jobs:
   timeplanning-pn-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: 'Preparing Time Planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-timeplanning-plugin
         ref: stable
         path: eform-angular-timeplanning-plugin
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
@@ -1136,11 +1136,11 @@ jobs:
       matrix:
         test: [a,b,c,d,e,f,g,h,i,j,k,l,m,n,o,p,q,r,b1m,c1m,d1m,e1m,f1m,h1m,i1m,j1m,l1m]
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: 'Preparing Time Planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-timeplanning-plugin
@@ -1170,7 +1170,7 @@ jobs:
       with:
         node-version: 22
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         repository: microting/eform-angular-frontend
         ref: stable
@@ -1283,16 +1283,16 @@ jobs:
   timeplanning-pn-dotnet-unit-test:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: 'Preparing Time Planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-timeplanning-plugin
         ref: stable
         path: eform-angular-timeplanning-plugin
     - name: 'Preparing Frontend checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-frontend
@@ -1344,9 +1344,9 @@ jobs:
           - name: h
             filter: "FullyQualifiedName=TimePlanning.Pn.Test.SettingsServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningContentHandoverGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningPlanningsGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningPlanningsGrpcServiceTimeZoneTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningSettingsGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.GrpcServices.TimePlanningWorkingHoursGrpcServiceTests|FullyQualifiedName=TimePlanning.Pn.Test.WorkingHoursExcelExportE2ETests|FullyQualifiedName=TimePlanning.Pn.Test.WorkingHoursExcelShiftColumnOrderTests|FullyQualifiedName=TimePlanning.Pn.Test.WorkingHoursMessagePersistenceTests|FullyQualifiedName=TimePlanning.Pn.Test.EnumerateShiftSegmentsTests|FullyQualifiedName=TimePlanning.Pn.Test.TimePlanningWorkingHoursServiceNullUserTests"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: 'Preparing Time Planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-angular-timeplanning-plugin
@@ -1365,9 +1365,9 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Build
       run: dotnet build eform-angular-timeplanning-plugin/eFormAPI/Plugins/TimePlanning.Pn/TimePlanning.Pn.sln
     - name: Unit Tests (shard ${{ matrix.shard.name }})
@@ -1389,16 +1389,16 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: 'Preparing debian-service checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-debian-service
         ref: stable
         path: eform-debian-service
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-debian-service
     - name: Build
@@ -1408,7 +1408,7 @@ jobs:
   timeplanning-service-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Create docker network
@@ -1424,14 +1424,14 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: 'Preparing Debian Service checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-debian-service
         ref: stable
         path: eform-debian-service
     - name: 'Preparing eform-service-timeplanning-plugin checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-timeplanning-plugin
@@ -1456,9 +1456,9 @@ jobs:
         docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
         docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-service-timeplanning-plugin
     - name: Build
@@ -1505,7 +1505,7 @@ jobs:
   items-planning-service-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Create docker network
@@ -1521,14 +1521,14 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: 'Preparing Debian Service checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-debian-service
         ref: stable
         path: eform-debian-service
     - name: 'Preparing eform-service-items-planning-plugin checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-items-planning-plugin
@@ -1551,9 +1551,9 @@ jobs:
         docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
         docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-service-items-planning-plugin
     - name: Build
@@ -1600,7 +1600,7 @@ jobs:
   workflow-service-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Create docker network
@@ -1616,14 +1616,14 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: 'Preparing Debian Service checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-debian-service
         ref: stable
         path: eform-debian-service
     - name: 'Preparing eform-service-workflow-plugin checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-workflow-plugin
@@ -1646,9 +1646,9 @@ jobs:
         docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
         docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < main/420_chemical-base-plugin.sql
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-service-workflow-plugin
     - name: Build
@@ -1695,7 +1695,7 @@ jobs:
   backend-configuration-service-build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - name: Create docker network
@@ -1711,35 +1711,35 @@ jobs:
     - name: Sleep 30 seconds for letting the mariadb container start
       run: sleep 30
     - name: 'Preparing Debian Service checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-debian-service
         ref: stable
         path: eform-debian-service
     - name: 'Preparing items planning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-items-planning-plugin
         ref: stable
         path: eform-service-items-planning-plugin
     - name: 'Preparing workflow checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-workflow-plugin
         ref: stable
         path: eform-service-workflow-plugin
     - name: 'Preparing TimePlanning checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-timeplanning-plugin
         ref: stable
         path: eform-service-timeplanning-plugin
     - name: 'Preparing BackendConfiguration checkout'
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       with:
         fetch-depth: 0
         repository: microting/eform-service-backendconfiguration-plugin
@@ -1765,9 +1765,9 @@ jobs:
         docker exec -i mariadbtest mariadb -u root --password=secretpassword -e 'create database `420_chemical-base-plugin`'
         docker exec -i mariadbtest mariadb -u root --password=secretpassword 420_chemical-base-plugin < eform-service-backendconfiguration-plugin/420_chemical-base-plugin.sql
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 10.0.x
+        dotnet-version: 11.0.x
     - name: Install dependencies
       run: dotnet restore eform-service-backendconfiguration-plugin
     - name: Build
@@ -1818,7 +1818,7 @@ jobs:
         dotnet build --configuration Release eform-service-backendconfiguration-plugin/ci/eformparsed/
     - name: run eformparsed test program
       run: |
-        dotnet eform-service-backendconfiguration-plugin/ci/eformparsed/bin/Release/net10.0/eformparsed.dll
+        dotnet eform-service-backendconfiguration-plugin/ci/eformparsed/bin/Release/net11.0/eformparsed.dll
     - name: Stop the newly build Docker container
       run: docker stop my-container
     - name: Get standard output
@@ -1836,10 +1836,10 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - uses: actions/download-artifact@v4
@@ -1870,7 +1870,7 @@ jobs:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         path: main
     - uses: actions/download-artifact@v4
